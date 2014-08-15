@@ -13,28 +13,25 @@ switch ($action){
 	case "send":
 		$sender = $_SESSION['__user__'];
 		$target = $_POST['targetID'];
-		$target_type = $_POST['target_type'];
 		$text = $db->real_escape_string($_POST['txt']);
 		$th = null;
 		$rb = RBUtilities::getInstance($db);
 		if ($_REQUEST['tid'] == 0){
-			$target_user = $rb->loadUserFromUid($target, $target_type);
-			$th = new Thread(0, $sender, $target_user, new MySQLDataLoader($db));
+			$th = new Thread(0, new MySQLDataLoader($db), array($sender->getUniqID(), $target));
 			$th->save();
-			//array_unshift($_SESSION['threads'], $th);
 			$_SESSION['threads'][$th->getTid()] = $th;
 		}
 		else {
 			$th = $_SESSION['thread'];
 			$th->restoreThread(new MySQLDataLoader($db));
-			$target_user = $th->getOtherUser($sender->getUid());
 		}
-		$msg = new Message(0, $th->getTid(), $sender, $target_user, new MySQLDataLoader($db), null);
+		$msg = new Message(0, $th->getTid(), $sender, $th->getTid(), new MySQLDataLoader($db), null);
 		$msg->setText($text);
 		$msg->send();
 		$th->addMessage($msg);
 		$_SESSION['threads'][$th->getTid()] = $th;
 		krsort($_SESSION['threads']);
+
 		list($date, $time) = explode(" ", $msg->getSendTimestamp());
 		if ($_REQUEST['tid'] == 0){
 			if (date("Y-m-d") == $date){
@@ -53,11 +50,24 @@ switch ($action){
 			}
 		}
 		$date .= " ".substr($time, 0, 5);
-		if ($_REQUEST['tid'] != 0){
-			$_SESSION['thread'] = $th;
+		$_SESSION['thread'] = $th;
+
+		//header("Content-type: text/plain");
+		//echo "ok|".$th->getTid()."|".$th->isRead($sender)."|".$target_user->getFullName(1, 1)."|".$th->getMessagesCount()."|".$date."|".$text."|".$msg->getID();
+
+		header("Content-type: application/json");
+		$t = $th->getOtherUser($sender->getUniqID());
+		$target_name = "";
+		if ($t instanceof Thread) {
+			$target_name = $t->getName();
 		}
-		header("Content-type: text/plain");
-		echo "ok|".$th->getTid()."|".$th->isRead($sender)."|".$target_user->getFullName(1, 1)."|".$th->getMessagesCount()."|".$date."|".$text."|".$msg->getID();
+		else {
+			$target_name = $t->getFullName();
+		}
+		$response = array("status" => "ok", "message" => "", "thread" => $th->getTid(), "sender" => "Tu", "target" => $target_name, "count" => $th->getMessagesCount(), "date" => "{$date}", "text" => "{$msg->getText()}", "mid" => $msg->getID());
+		$response['t_t'] = $th->getType();
+		echo json_encode($response);
+		exit;
 		break;
 	case "list_threads":
 		unset($_SESSION['thread']);

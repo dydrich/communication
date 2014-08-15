@@ -49,7 +49,7 @@ $(document).ready(function(){
 });
 
 var check_for_updates = function(){
-	last_msg = <?php echo $thread->getLastMessage()->getID() ?>;
+	last_msg = <?php if (count($thread->getMessages()) > 0) echo $thread->getLastMessage()->getID(); else echo 0 ?>;
 	tid = <?php echo $thread->getTid() ?>;
 	upd = "msg";
 	var p = document.getElementsByTagName("audio")[0];
@@ -83,11 +83,21 @@ var check_for_updates = function(){
 		
 					div_send = document.createElement("div");
 					div_send.setAttribute("class", "msg_send");
-					div_send.appendChild(document.createTextNode(t.send));
+					if (t.t_t != 'G') {
+						div_send.appendChild(document.createTextNode(t.send));
+					}
+					else {
+
+					}
 		
 					div_read = document.createElement("div");
 					div_read.setAttribute("class", "msg_read");
-					div_read.appendChild(document.createTextNode("Letto "+t.read));
+					if (t.t_t != 'G') {
+						div_read.appendChild(document.createTextNode("Letto "+t.read));
+					}
+					else {
+						div_read.appendChild(document.createTextNode(t.send));
+					}
 		
 					div_txt = document.createElement("div");
 					div_txt.setAttribute("class", "msg_text");
@@ -105,8 +115,8 @@ var check_for_updates = function(){
 					p.play();
 				}
 				else {
-					mid = this.mid;
-					$('#read_'+mid).text(this.read);
+					mid = t.mid;
+					$('#read_'+mid).text("Letto "+t.read);
 				}
 			});
 		}
@@ -127,10 +137,14 @@ var send_message = function(){
 		},
 		complete: function(data){
 			//$('#target').val("");
-			dati = data.responseText.split("|");
+			r = data.responseText;
+			if(r == "null"){
+				return false;
+			}
+			var json = $.parseJSON(r);
 
 			div_msg = document.createElement("div");
-			div_msg.setAttribute("id", "msg_"+dati[7]);
+			div_msg.setAttribute("id", "msg_"+json.mid);
 			div_msg.setAttribute("display", "none");
 			div_msg.setAttribute("class", "message_detail my_msg");
 
@@ -139,16 +153,18 @@ var send_message = function(){
 
 			div_send = document.createElement("div");
 			div_send.setAttribute("class", "msg_send");
-			div_send.appendChild(document.createTextNode(dati[5]));
+			div_send.appendChild(document.createTextNode(json.date));
 
 			div_read = document.createElement("div");
 			div_read.setAttribute("class", "msg_read");
-			div_read.setAttribute("id", "read_"+dati[7]);
-			div_read.appendChild(document.createTextNode("Letto: no"));
+			div_read.setAttribute("id", "read_"+json.mid);
+			if (json.t_t != 'G') {
+				div_read.appendChild(document.createTextNode("Letto: no"));
+			}
 
 			div_txt = document.createElement("div");
 			div_txt.setAttribute("class", "msg_text");
-			div_txt.appendChild(document.createTextNode(dati[6]));
+			div_txt.appendChild(document.createTextNode(json.text));
 
 			div_h.appendChild(div_send);
 			div_h.appendChild(div_read);
@@ -163,7 +179,7 @@ var send_message = function(){
 			$('#newmsg').show();
 			$('#viewlist').hide();
 
-			$('#msg_'+dati[7]).show(1500);
+			$('#msg_'+json.mid).show(1500);
 		}
 	});
 };
@@ -188,52 +204,67 @@ var send_message = function(){
 		</div>
 	</div>
 	<div id="sel_thread">
-		<div id="oth_user"><?php echo $target_user->getFullName(1, 1) ?></div>
+		<div id="oth_user"><?php echo $thread->getTargetName($uniqID) ?></div>
 	<?php
-	foreach ($thread->getMessages() as $k => $msg){
-		list($date, $time) = explode(" ", $msg->getSendTimestamp());
-		if (date("Y-m-d") == $date){
-			$date = " oggi alle";
-		}
-		else {
-			$date = "il ". format_date($date, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
-		}
-		if ($msg->getReadTimestamp() == null){
-			$rdate = ": no";
-			$rtime = "";
-		}
-		else {
-			list($rdate, $rtime) = explode(" ", $msg->getReadTimestamp());
-			if (date("Y-m-d") == $rdate){
-				$rdate = " oggi alle";
-				$rtime = substr($rtime, 0, 5);
+	if (count($thread->getMessages()) > 0) {
+		foreach ($thread->getMessages() as $k => $msg){
+			list($date, $time) = explode(" ", $msg->getSendTimestamp());
+			if (date("Y-m-d") == $date){
+				$date = " oggi alle";
 			}
 			else {
-				$rdate = " il ". format_date($rdate, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
-				$rtime = substr($rtime, 0, 5);
+				$date = "il ". format_date($date, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
 			}
-		}
+			if ($msg->getReadTimestamp() == null){
+				$rdate = ": no";
+				$rtime = "";
+			}
+			else {
+				list($rdate, $rtime) = explode(" ", $msg->getReadTimestamp());
+				if (date("Y-m-d") == $rdate){
+					$rdate = " oggi alle";
+					$rtime = substr($rtime, 0, 5);
+				}
+				else {
+					$rdate = " il ". format_date($rdate, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
+					$rtime = substr($rtime, 0, 5);
+				}
+			}
+			$msg_send = $msg_read = "";
+			if ($thread->getType() == 'G') {
+				if ($msg->getFrom()->getUniqID() == $uniqID) {
+					$msg_send = "Tu";
+				}
+				else {
+					$msg_send = $msg->getFrom()->getFullName();
+				}
+				$msg_read = "Inviato ". $date." ".substr($time, 0, 5);
+			}
+			else {
+				$msg_send = "Inviato ". $date." ".substr($time, 0, 5);
+				$msg_read = "Letto ".$rdate." ".$rtime;
+			}
 	?>
 		<div id="msg_<?php echo $k; ?>" class="message_detail <?php if ($msg->getFrom()->getUid() == $uid) echo "my_msg"; else echo "target_msg" ?>">
 			<div class="msg_header">
-				<div class="msg_send">Inviato <?php echo $date." ".substr($time, 0, 5) ?></div>
-				<div class="msg_read" id="read_<?php echo $k ?>">Letto<?php echo $rdate." ".$rtime ?></div>
+				<div class="msg_send"><?php echo $msg_send ?></div>
+				<div class="msg_read" id="read_<?php echo $k ?>"><?php echo $msg_read ?></div>
 			</div>
 			<div class="msg_text"><?php echo utf8_decode($msg->getText()) ?></div>
 		</div>
-	<?php 
+	<?php
+		}
 	}
 	?>
 	</div>
 	<div id="message">
 		<form>
-		<div id="to"><input type="text" name="target" id="target" readonly value="<?php echo $target_user->getFullName() ?>" /></div>
+		<div id="to"><input type="text" name="target" id="target" readonly value="<?php echo $thread->getTargetName($uniqID) ?>" /></div>
 		<div id="get_to"><a href="#" id="get_target"><img src="theme/36.png" style="margin-top: 4px" /></a></div>
 		<div id="msgtxt">
 			<textarea id="txt" name="txt" placeholder="Componi il messaggio (max 400 caratteri)" ></textarea>
 		</div>
-		<input type="hidden" name="targetID" id="targetID" value="<?php echo $target_user->getUid() ?>" />
-		<input type="hidden" name="target_type" id="target_type" value="<?php echo $thread->getOtherUserType() ?>" />
+		<input type="hidden" name="targetID" id="targetID" value="<?php echo $thread->getTid() ?>" />
 		</form>
 		<span>Rimangono <span id="char_left">400</span> caratteri</span>
 		<a href="#" id="send_lnk"><img src="theme/mail-send-icon.png" style="width: 24px; height: 24px" /></a>

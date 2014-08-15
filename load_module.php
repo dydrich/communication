@@ -39,52 +39,30 @@ else {
 	$user_type = "student";
 }
 $_SESSION['user_type'] = $user_type;
-
+$uniqID = $db->executeCount("SELECT id FROM rb_com_users WHERE uid = {$uid} AND type = '{$user_type}'");
 $uid = $_SESSION['__user__']->getUid();
-//$other_users = array();
-//if (!$_SESSION['threads']){
-	$sel_th = "SELECT * FROM rb_com_threads WHERE ((user1 = {$uid} AND user1_group = '{$user_type}') OR (user2 = {$uid} AND user2_group = '{$user_type}')) ORDER BY last_message DESC";
-	//print $sel_th;
-	$res_th = $db->execute($sel_th);
-	$rb = RBUtilities::getInstance($db);
-	if ($res_th->num_rows > 0){
-		$threads = array();
-		while ($th = $res_th->fetch_assoc()){
-			$u1 = $u2 = null;
-			if ($th['user1'] == $uid && $th['user1_group'] == $user_type){
-				$u1 = $_SESSION['__user__'];
-				$u2 = $rb->loadUserFromUid($th['user2'], $th['user2_group']);
-				//$other_user = $u2;
-			}
-			else {
-				$u2 = $_SESSION['__user__'];
-				$u1 = $rb->loadUserFromUid($th['user1'], $th['user1_group']);
-				//$other_user = $u1;
-			}
-			$thread = new Thread($th['tid'], $u1, $u2, new MySQLDataLoader($db));
-			$threads[$th['tid']] = $thread;
-			//$other_users[$th['tid']] = $other_user;
-		}
-		$_SESSION['threads'] = $threads;
-	}
-//}
-/*
-else {
+$sel_th = "SELECT rb_com_threads.* FROM rb_com_threads, rb_com_utenti_thread WHERE tid = thread AND utente = {$uniqID} ORDER BY last_message DESC";
+$res_th = $db->execute($sel_th);
+$rb = RBUtilities::getInstance($db);
+if ($res_th->num_rows > 0){
 	$threads = array();
-	$threads = $_SESSION['threads'];
-	foreach ($threads as $th){
-		if ($th->getUser1()->getUid() == $uid){
-			$u1 = $_SESSION['__user__'];
-			//$other_user = $th->getUser2();
+	while ($th = $res_th->fetch_assoc()){
+		if ($th['owner'] != "") {
+			$owner = $rb->loadUserFromUniqID($th['owner']);
+			//$other_user = $u2;
 		}
 		else {
-			$u2 = $_SESSION['__user__'];
-			//$other_user = $th->getUser1();
+			$owner = "";
 		}
-		$other_users[$th->getTid()] = $other_user;
+		$thread = new Thread($th['tid'], new MySQLDataLoader($db), $th['creation']);
+		if ($th['type'] == 'G') {
+			$thread->setName($th['name']);
+			$thread->setType('G');
+		}
+		$threads[$th['tid']] = $thread;
 	}
+	$_SESSION['threads'] = $threads;
 }
-*/
 
 if (isset($_REQUEST['page'])){
 	header("Location: {$_REQUEST['page']}.php");

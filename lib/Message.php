@@ -8,6 +8,7 @@
  * 
  */
 
+
 class Message {
 
 	/**
@@ -15,38 +16,38 @@ class Message {
 	 * @var Thread
 	 * thread the message belong to
 	 */
-    private $thread;
+    protected $thread;
 
     /**
      * 
      * @var integer
      * message id
      */
-    private $ID;
+	protected $ID;
 
     /**
      * 
      * @var UserBean
      * sender
      */
-    private $from;
+	protected $from;
     /**
      * target
      * @var UserBean
      */
-    private $to;
+    protected $to;
 
     /**
      * message'stext
      * @var string
      */
-    private $text;
+	protected $text;
 
     /**
      * date and time of sending
      * @var timestamp
      */
-    private $send_timestamp;
+	protected $send_timestamp;
 	/**
 	 * date and time of reading
 	 * @var timestamp
@@ -57,7 +58,7 @@ class Message {
      * source of data
      * @var MYSQLDataLoader
      */
-    private $datasource;
+	protected $datasource;
 	
 	/**
 	 * 
@@ -66,7 +67,7 @@ class Message {
 	 * @param UserBean $target
 	 * @param DataLoader $ds
 	 */
-    public function __construct($mid, $tid, UserBean $sender, UserBean $target, DataLoader $ds, $data){
+    public function __construct($mid, $tid, UserBean $sender, $target, DataLoader $ds, $data){
 		$this->thread = $tid;
 		$this->from = $sender;
 		$this->to = $target;
@@ -105,7 +106,7 @@ class Message {
     }
 
     public function getText(){
-		return $this->text;
+		return stripslashes($this->text);
     }
 
     public function setText($txt){
@@ -134,8 +135,8 @@ class Message {
 
     public function send(){
     	$text = $this->text;
-    	$this->ID = $this->datasource->executeUpdate("INSERT INTO rb_com_messages (tid, sender, target, text) VALUES ({$this->getThread()}, {$this->from->getUid()}, {$this->to->getUid()}, '{$text}')");
-    	$this->send_timestamp = date("Y-m-d H:i:s");
+	    $this->ID = $this->datasource->executeUpdate("INSERT INTO rb_com_messages (tid, sender, target, text) VALUES ({$this->getThread()}, {$this->from->getUniqID()}, {$this->to}, '{$text}')");
+	    $this->send_timestamp = date("Y-m-d H:i:s");
     }
     
     public function read(){

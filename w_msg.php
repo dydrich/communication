@@ -3,9 +3,11 @@
 			<p class="w_text">
 			<?php
 			$user_type = $_SESSION['user_type'];
-			$uid = $_SESSION['__user__']->getUid();
-			$sel_msg = "SELECT COUNT(mid) FROM rb_com_messages, rb_com_threads WHERE rb_com_messages.tid = rb_com_threads.tid AND target = {$_SESSION['__user__']->getUid()} && ((user1 = {$uid} AND user1_group = '{$user_type}') OR (user2 = {$uid} AND user2_group = '{$user_type}')) AND read_timestamp IS NULL";
+			$uniqID = $_SESSION['__user__']->getUniqID();
+			$sel_msg = "SELECT COUNT(mid) FROM rb_com_messages, rb_com_threads, rb_com_utenti_thread WHERE rb_com_messages.tid = rb_com_threads.tid AND rb_com_threads.tid = thread AND type = 'C' AND utente = {$uniqID} AND target = rb_com_threads.tid AND sender <> {$uniqID} AND read_timestamp IS NULL";
 			$unread = $db->executeCount($sel_msg);
+			$sel_grp = "SELECT COUNT(mid) FROM rb_com_messages, rb_com_threads, rb_com_utenti_thread WHERE rb_com_messages.tid = rb_com_threads.tid AND rb_com_threads.tid = thread AND type = 'G' AND utente = {$uniqID} AND target = rb_com_threads.tid AND sender <> {$uniqID} AND send_timestamp > last_access ";
+			$unread += $db->executeCount($sel_grp);
 			if($unread < 1) {
 				echo "<span>Nessun nuovo messagggio</span>";
 			}

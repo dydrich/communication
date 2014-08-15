@@ -9,28 +9,26 @@ if ($_POST['upd'] == "msg"){
 	$thread = $_SESSION['thread'];
 	$thread->restoreThread(new MySQLDataLoader($db));
 	$response = $thread->checkForUpdates();
+	$thread->updateLastAccess($_SESSION['__user__']->getUniqID());
 	$_SESSION['thread'] = $thread;
 }
-else {
+else if ($_POST['upd'] == "th") {
 	/*
 	 * threads update
 	 * first step: new threads
 	 */
 	$last_msg = $_POST['lmsg'];
-	$response = "";
-	$sel_new_th = "SELECT * FROM rb_com_threads WHERE tid > {$_POST['tid']} AND user2 = {$_SESSION['__user__']->getUId()} AND user2_group = '{$_SESSION['user_type']}' ORDER BY tid ASC";
+	$response = array();
+	$sel_new_th = "SELECT rb_com_threads.* FROM rb_com_threads, rb_com_utenti_thread WHERE tid = thread AND tid > {$_POST['tid']} AND utente = {$_SESSION['__user__']->getUniqID()} ORDER BY tid ASC";
 	$res_th = $db->executeQuery($sel_new_th);
 	if ($res_th->num_rows < 1){
-		$response = array();
-		$response['status'] = "no_upd";
 	}
 	else {
 		$rb = RBUtilities::getInstance($db);
 		$tids = array();
 		$response = array();
 		while ($row = $res_th->fetch_assoc()){
-			$user1 = $rb->loadUserFromUid($row['user1'], $row['user1_group']);
-			$th = new Thread($row['tid'], $user1, $_SESSION['__user__'], new MySQLDataLoader($db));
+			$th = new Thread($row['tid'], new MySQLDataLoader($db), $row['creation']);
 			$_SESSION['threads'][$row['tid']] = $th;
 			$last = $th->getLastMessage();
 			list($d, $t) = explode(" ", $last->getSendTimestamp());
@@ -43,17 +41,18 @@ else {
 			$date .= " ".substr($t, 0, 5);
 			//$last_msg = $last->getID();
 			$tids[] = $row['tid'];
-			array_unshift($response, array("type" => "new", "tid" => $row['tid'], "mid" => $last->getID(),  "user" => $user1->getFullName(1, 1), "count" => $th->getMessagesCount(), "datetime" => $date, "text" => $last->getText()));
+			$target_name = $th->getTargetName($_SESSION['__user__']->getUniqID());
+			array_unshift($response, array("type" => "new", "tid" => $row['tid'], "mid" => $last->getID(),  "user" => $target_name, "count" => $th->getMessagesCount(), "datetime" => $date, "text" => $last->getText()));
 		}
 	}
 	/*
 	 * second step: new messages in existing threads 
 	 */
 	$ins = "";
-	if (count($tids) > 0){
+	if (isset($tids) && count($tids) > 0){
 		$ins = implode(",", $tids);
 	}
-	$sel_new_msgs = "SELECT rb_com_messages.*, user1, user2, user1_group, user2_group FROM rb_com_messages, rb_com_threads WHERE rb_com_threads.tid = rb_com_messages.tid AND target = {$_SESSION['__user__']->getUId()} AND ((user1 = {$_SESSION['__user__']->getUId()} AND user1_group = '{$_SESSION['user_type']}') OR (user2 = {$_SESSION['__user__']->getUId()} AND user2_group = '{$_SESSION['user_type']}')) AND mid > {$last_msg}";
+	$sel_new_msgs = "SELECT rb_com_messages.* FROM rb_com_messages, rb_com_threads, rb_com_utenti_thread WHERE rb_com_threads.tid = rb_com_messages.tid AND rb_com_threads.tid = thread AND utente = {$_SESSION['__user__']->getUniqID()} AND mid > {$last_msg}";
 	//echo $sel_new_msgs;
 	if ($ins != ""){
 		$sel_new_msgs .= " AND rb_com_messages.tid NOT IN ({$ins})";
@@ -64,10 +63,11 @@ else {
 			$response = array();
 		}
 		while ($row = $res_new_msgs->fetch_assoc()){
-			$th = $_SESSION['threads'][$row[tid]];
+			$th = $_SESSION['threads'][$row['tid']];
 			$th->restoreThread(new MySQLDataLoader($db));
-			$user1 = $th->getOtherUser($_SESSION['__user__']->getUid());
-			$msg = new Message($row['mid'], $th->getTid(), $user1, $_SESSION['__user__'], new MySQLDataLoader($db), $row);
+			$rb = RBUtilities::getInstance($db);
+			$user1 = $rb->loadUserFromUniqID($row['sender']);
+			$msg = new Message($row['mid'], $th->getTid(), $user1, $th->getTid(), new MySQLDataLoader($db), $row);
 			$msg->setText($row['text']);
 			$th->addMessage($msg);
 			$_SESSION['threads'][$row['tid']] = $th;
@@ -80,8 +80,8 @@ else {
 				$date = format_date($d, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
 			}
 			$date .= " ".substr($t, 0, 5);
-			//$last_msg = $last->getID();
-			array_unshift($response, array("type" => "del_new", "tid" => $row['tid'], "mid" => $msg->getID(), "user" => $user1->getFullName(1, 1), "count" => $th->getMessagesCount(), "datetime" => $date, "text" => $msg->getText()));
+			$target_name = $th->getTargetName($_SESSION['__user__']->getUniqID());
+			array_unshift($response, array("type" => "upd", "tid" => $row['tid'], "mid" => $msg->getID(), "thread_type" => $th->getType(), "sender" => $user1->getFullName(), "user" => $target_name, "count" => $th->getMessagesCount(), "datetime" => $date, "text" => $msg->getText()));
 		}
 	}
 }

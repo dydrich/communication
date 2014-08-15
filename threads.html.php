@@ -48,10 +48,9 @@ $(function() {
         source: "get_users.php",
         minLength: 2,
         select: function(event, ui){
-			uid = ui.item.uid;
+			uid = ui.item.uniqID;
 			tp = ui.item.type;
 			$('#targetID').val(uid);
-			$('#target_type').val(tp);
         }
     });                
  
@@ -72,13 +71,19 @@ var send_message = function(){
 		complete: function(data){
 			$('#txt').val("");
 			$('#target').val("");
-			dati = data.responseText.split("|");
+			//dati = data.responseText.split("|");
+			r = data.responseText;
+			if(r == ""){
+				return false;
+			}
+			var json = $.parseJSON(r);
+
 			lnk = document.createElement("A");
-			lnk.setAttribute("href", "controller.php?do=show_thread&tid="+dati[1]);
+			lnk.setAttribute("href", "controller.php?do=show_thread&tid="+json.thread);
 			lnk.setAttribute("class", "th_link");
 			
 			div_th = document.createElement("DIV");
-			div_th.setAttribute("id", "thread_"+dati[1]);
+			div_th.setAttribute("id", "thread_"+json.thread);
 			div_th.setAttribute("class", "thread");
 			
 			div_h = document.createElement("div");
@@ -86,23 +91,23 @@ var send_message = function(){
 			
 			div_user = document.createElement("div");
 			div_user.setAttribute("class", "thread_user");
-			div_user.appendChild(document.createTextNode(dati[3]));
+			div_user.appendChild(document.createTextNode(json.target));
 
 			div_count = document.createElement("div");
 			div_count.setAttribute("class", "thread_msg_count");
-			div_count.appendChild(document.createTextNode(dati[4]));
+			div_count.appendChild(document.createTextNode(json.date));
 
-			div_lm = document.createElement("div");
-			div_lm.setAttribute("class", "thread_lm");
-			div_lm.appendChild(document.createTextNode(dati[5]));
+			//div_lm = document.createElement("div");
+			//div_lm.setAttribute("class", "thread_lm");
+			//div_lm.appendChild(document.createTextNode(json.date));
 
 			div_txt = document.createElement("div");
 			div_txt.setAttribute("class", "thread_text");
-			div_txt.appendChild(document.createTextNode(dati[6]));
+			div_txt.appendChild(document.createTextNode(json.text));
 
 			div_h.appendChild(div_user);
 			div_h.appendChild(div_count);
-			div_h.appendChild(div_lm);
+			//div_h.appendChild(div_lm);
 
 			div_th.appendChild(div_h);
 			div_th.appendChild(div_txt);
@@ -153,51 +158,66 @@ var check_for_updates = function(){
 					$("#ln_"+t.tid).hide();
 					$('#thread_'+t.tid).hide();
 				}
-					
-				a_ln = document.createElement("a");
-				a_ln.setAttribute("href", "controller.php?do=show_thread&tid="+t.tid);
-				a_ln.setAttribute("id", "ln_"+t.tid);
-				a_ln.setAttribute("class", "th_link");
+				else if (t.type == "upd") {
+					//alert(t.count);
+					//$('#count_thr_'+t.tid).text(t.count);
+					$('#date_thr_'+t.tid).text(t.datetime);
+					if (t.thread_type == 'G') {
+						$('#txt_thr_'+t.tid).text(t.sender+": "+t.text);
+					}
+					else {
+						$('#txt_thr_'+t.tid).text(">> "+t.text);
+					}
+					$('#head_thr_'+ t.tid).addClass("bold_");
+					txt = $('#thread_user_'+ t.tid).text();
+					$('#thread_user_'+ t.tid).html(t.user+"<span class='new_msg_sign'>(nuovi messaggi)</span>")
+				}
+				else {
+					a_ln = document.createElement("a");
+					a_ln.setAttribute("href", "controller.php?do=show_thread&tid="+t.tid);
+					a_ln.setAttribute("id", "ln_"+t.tid);
+					a_ln.setAttribute("class", "th_link");
 
-				div_th = document.createElement("div");
-				div_th.setAttribute("id", "thread_"+t.tid);
-				div_th.setAttribute("display", "none");
-				div_th.setAttribute("class", "thread");
-	
-				div_h = document.createElement("div");
-				div_h.setAttribute("class", "thread_header bold_");
-	
-				div_user = document.createElement("div");
-				div_user.setAttribute("class", "thread_user");
-				div_user.appendChild(document.createTextNode(t.user));
+					div_th = document.createElement("div");
+					div_th.setAttribute("id", "thread_"+t.tid);
+					div_th.setAttribute("display", "none");
+					div_th.setAttribute("class", "thread");
 
-				span = document.createElement("span");
-				span.setAttribute("class", "new_msg_sign");
-				span.appendChild(document.createTextNode("(nuovi messaggi)"));
-	
-				div_count = document.createElement("div");
-				div_count.setAttribute("class", "thread_msg_count");
-				div_count.appendChild(document.createTextNode(t.count));
+					div_h = document.createElement("div");
+					div_h.setAttribute("class", "thread_header bold_");
 
-				div_lm = document.createElement("div");
-				div_lm.setAttribute("class", "thread_lm");
-				div_lm.appendChild(document.createTextNode(t.datetime));
-	
-				div_txt = document.createElement("div");
-				div_txt.setAttribute("class", "thread_text");
-				div_txt.appendChild(document.createTextNode(t.text));
-	
-				div_user.appendChild(span);
-				div_h.appendChild(div_user);
-				div_h.appendChild(div_count);
-				div_h.appendChild(div_lm);
-				div_th.appendChild(div_h);
-				div_th.appendChild(div_txt);
-				a_ln.appendChild(div_th);
+					div_user = document.createElement("div");
+					div_user.setAttribute("class", "thread_user");
+					div_user.appendChild(document.createTextNode(t.user));
 
-				$('#threads').prepend(a_ln);
-				$('#thread_'+t.tid).hide();
-				$('#thread_'+t.tid).toggle({effect: 'scale', percent: 150});
+					span = document.createElement("span");
+					span.setAttribute("class", "new_msg_sign");
+					span.appendChild(document.createTextNode("(nuovi messaggi)"));
+
+					div_count = document.createElement("div");
+					div_count.setAttribute("class", "thread_msg_count");
+					div_count.appendChild(document.createTextNode(t.datetime));
+
+					//div_lm = document.createElement("div");
+					//div_lm.setAttribute("class", "thread_lm");
+					//div_lm.appendChild(document.createTextNode(t.datetime));
+
+					div_txt = document.createElement("div");
+					div_txt.setAttribute("class", "thread_text");
+					div_txt.appendChild(document.createTextNode(t.text));
+
+					div_user.appendChild(span);
+					div_h.appendChild(div_user);
+					div_h.appendChild(div_count);
+					//div_h.appendChild(div_lm);
+					div_th.appendChild(div_h);
+					div_th.appendChild(div_txt);
+					a_ln.appendChild(div_th);
+
+					$('#threads').prepend(a_ln);
+					$('#thread_'+t.tid).hide();
+					$('#thread_'+t.tid).toggle({effect: 'scale', percent: 150});
+				}
 				p.play();
 				if (this.type == "new"){
 					last_tid = t.tid;
@@ -231,23 +251,43 @@ var check_for_updates = function(){
 	<?php
 	if (isset($threads) && count($threads) > 0){
 		foreach ($ordered_threads as $k => $thread){
-			$other = $thread->getOtherUser($_SESSION['__user__']->getUid());
-			list($date, $time) = explode(" ", $thread->getLastMessage()->getSendTimestamp());
+			list($date, $time) = explode(" ", $k);
 			if (date("Y-m-d") == $date){
 				$date = "Oggi alle";
+			}
+			else if ($date == date('Y-m-d',time() - (24 * 60 * 60))){
+				$date = " Ieri alle";
 			}
 			else {
 				$date = format_date($date, SQL_DATE_STYLE, IT_DATE_STYLE, "/");
 			}
+			$text = "Nessun messaggio";
+			if (count($thread->getMessages()) > 0) {
+				$text = "";
+				if ($thread->getType() == 'G') {
+					if ($thread->getLastMessage()->getFrom()->getUniqID() != $uniqID) {
+						$text = $thread->getLastMessage()->getFrom()->getFullName().": ";
+					}
+					else {
+						$text = "Tu: ";
+					}
+				}
+				else {
+					if ($thread->getLastMessage()->getFrom()->getUniqID() != $uniqID) {
+						$text = "&gt;&gt;  ";
+					}
+				}
+				$text .= truncateString(utf8_decode($thread->getLastMessage()->getText()), 200);
+			}
 	?>
-		<a href="controller.php?do=show_thread&tid=<?php echo $thread->getTid() ?>" id="ln_<?php echo $thread->getTid() ?>" class="th_link">	
+		<a href="controller.php?do=show_thread&tid=<?php echo $thread->getTid() ?>" id="ln_<?php echo $thread->getTid() ?>" class="th_link">
 		<div id="thread_<?php echo $thread->getTid(); ?>" class="thread">
-			<div class="thread_header <?php if (!$thread->isRead($_SESSION['__user__'])) echo "bold_" ?>">
-				<div class="thread_user"><?php echo $other->getFullName(1, 1); if ((!$thread->isRead($_SESSION['__user__']))): ?><span class="new_msg_sign">(nuovi messaggi)</span><?php endif; ?></div>
-				<div class="thread_msg_count"><?php echo $thread->getMessagesCount() ?></div>
-				<div class="thread_lm"><?php echo $date." ".substr($time, 0, 5) ?></div>
+			<div id="head_thr_<?php echo $thread->getTid() ?>" class="thread_header <?php if (!$thread->isRead($_SESSION['__user__'])) echo "bold_" ?>">
+				<div id="thread_user_<?php echo $thread->getTid() ?>" class="thread_user"><?php echo $thread->getTargetName($_SESSION['__user__']->getUniqID()); if ($thread->isRead($_SESSION['__user__']) === false): ?><span class="new_msg_sign">(nuovi messaggi)</span><?php endif; ?></div>
+				<div id="date_thr_<?php echo $thread->getTid() ?>" class="thread_msg_count"><?php echo $date." ".substr($time, 0, 5) ?></div>
+				<!--<div id="count_thr_<?php echo $thread->getTid() ?>" class="thread_lm"><?php echo $thread->getMessagesCount() ?> messaggi</div> -->
 			</div>
-			<div class="thread_text"><?php echo truncateString(utf8_decode($thread->getLastMessage()->getText()), 200) ?></div>
+			<div id="txt_thr_<?php echo $thread->getTid() ?>" class="thread_text"><?php echo $text ?></div>
 		</div>
 		</a>
 	<?php
@@ -263,7 +303,6 @@ var check_for_updates = function(){
 			<textarea id="txt" name="txt" placeholder="Componi il messaggio (max 400 caratteri)" maxlength="400"></textarea>
 		</div>
 		<input type="hidden" name="targetID" id="targetID" />
-		<input type="hidden" name="target_type" id="target_type" />
 		</form>
 		<span>Rimangono <span id="char_left">400</span> caratteri</span>
 		<a href="#" id="send_lnk"><img src="theme/mail-send-icon.png" style="width: 24px; height: 24px" /></a>

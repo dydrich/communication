@@ -29,7 +29,8 @@ while ($us = $res_users->fetch_assoc()){
 			$type = "parent";
 		}
 	}
-	$users[] = array('uid' => $us['uid'], "value" => $name, "label" => $name, "type" => $type);
+	$uniqID = $db->executeCount("SELECT id FROM rb_com_users WHERE uid = {$us['uid']} AND type = '{$type}'");
+	$users[] = array('uniqID' => $uniqID, "value" => $name, "label" => $name, "type" => $type);
 }
 
 $json_users = json_encode($users);

@@ -9,18 +9,32 @@ check_session();
 $navigation_label = "messaggi";
 
 $user_type = $_SESSION['user_type'];
-$uid = $_SESSION['__user__']->getUid();
+$uniqID = $_SESSION['__user__']->getUniqID();
 
 if (isset($_SESSION['threads'])){
 	$threads = $_SESSION['threads'];
 	$ordered_threads = array();
+	$last_tid = 0;
+	$last_msg = 0;
 	foreach ($threads as $th){
-		$ordered_threads[$th->getLastMessage()->getSendTimestamp()] = $th;
+		$th->restoreThread(new MySQLDataLoader($db));
+		if (count($th->getMessages()) == 0) {
+			$ordered_threads[$th->getCreationDate()] = $th;
+		}
+		else {
+			$ordered_threads[$th->getLastMessage()->getSendTimestamp()] = $th;
+			if ($th->getLastMessage()->getID() > $last_msg) {
+				$last_msg = $th->getLastMessage()->getID();
+			}
+		}
+		if ($th->getTid() > $last_tid) {
+			$last_tid = $th->getTid();
+		}
 	}
 	krsort($ordered_threads);
 	
-	$last_tid = $db->executeCount("SELECT MAX(tid) FROM rb_com_threads WHERE ((user1 = {$uid} AND user1_group = '{$user_type}') OR (user2 = {$uid} AND user2_group = '{$user_type}'))");
-	$last_msg = $db->executeCount("SELECT MAX(mid) FROM rb_com_messages WHERE sender = {$uid} OR target = {$uid}");
+	$th_ids = array_keys($_SESSION['threads']);
+
 }
 else {
 	$last_tid = 0;

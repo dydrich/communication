@@ -7,21 +7,19 @@ require_once "../../lib/data_source.php";
 
 check_session();
 
-$uid = $_SESSION['__user__']->getUid();
+$uniqID = $_SESSION['__user__']->getUniqID();
 
+$now = date("Y-m-d H:i:s");
 $thread = $_SESSION['thread'];
 $thread->restoreThread(new MySQLDataLoader($db));
-$users = $thread->getUsers();
-$target_user = null;
-if ($users[0]->getUid() == $_SESSION['__user__']->getUid()){
-	$target_user = $users[1];
-}
-else {
-	$target_user = $users[0];
-}
+$thread->updateLastAccess($_SESSION['__user__']->getUniqID());
+$_SESSION['thread'] = $thread;
+$_SESSION['threads'][$thread->getTid()] = $thread;
 
 try{
-	$thread->readAll($_SESSION['__user__']);
+	if ($thread->getType() == 'C') {
+		$thread->readAll($_SESSION['__user__']);
+	}
 	$_SESSION['thread'] = $thread;
 } catch (MySQLException $ex){
 	echo $ex->getMessage();
