@@ -382,4 +382,13 @@ class Thread {
 		$this->lastAccesses[$uid] = date("Y-m-d H:i:s");
 		$this->datasource->executeUpdate("UPDATE rb_com_utenti_thread SET last_access = NOW() WHERE thread = ".$this->tid." AND utente = ".$uid);
 	}
+
+	public function deleteUser($uid) {
+		//$this->datasource->executeUpdate("DELETE FROM rb_com_messaggi WHERE sender = {$uid} AND tid = {$this->tid}");
+		$this->datasource->executeUpdate("DELETE FROM rb_com_utenti_thread WHERE thread = {$this->tid} AND utente = {$uid}");
+		//if (($key = array_search($uid, $this->users)) !== false) {
+		//	unset($this->users[$key]);
+		//}
+		$this->users = array_diff($this->users, array($uid));
+	}
 }

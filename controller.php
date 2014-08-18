@@ -79,4 +79,16 @@ switch ($action){
 		$_SESSION['thread'] = $thread;
 		header("Location: thread.php");
 		break;
+	case "leave":
+		$tid = $_REQUEST['tid'];
+		$us = $_SESSION['__user__']->getUniqID();
+		$thread = $_SESSION['threads'][$tid];
+		$thread->restoreThread(new MySQLDataLoader($db));
+		$thread->deleteUser($us);
+		unset($_SESSION['threads'][$tid]);
+		header("Content-type: application/json");
+		$response = array("status" => 'ok');
+		echo json_encode($response);
+		exit;
+		break;
 }
