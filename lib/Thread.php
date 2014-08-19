@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Message.php';
-require_once "../../lib/RBUtilities.php";
+require_once __DIR__."/../../../lib/RBUtilities.php";
 
 class Thread {
 
@@ -212,6 +212,13 @@ class Thread {
     public function getUsers(){
     	return $this->users;
     }
+
+	/**
+	 * @param null $users
+	 */
+	public function setUsers($users) {
+		$this->users = $users;
+	}
     
     public function readAll($user){
 	    $ts = null;
@@ -238,7 +245,7 @@ class Thread {
 	            }
 		    }
 		    else {
-			    if ($msg->getSendTimestamp() > $this->lastAccesses[$user->getUniqID()]){
+			    if ($msg->getSendTimestamp() > $this->lastAccesses[$user->getUniqID()] && $msg->getFrom()->getUniqID() != $user->getUniqID()){
 				    return false;
 			    }
 		    }
