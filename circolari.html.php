@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
-<link rel="stylesheet" href="../../intranet/teachers/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
 <script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
@@ -140,16 +141,16 @@ $(document).ready(function(){
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<div style="width: 95%; height: 30px; margin: 10px auto 0 auto; text-align: center; font-size: 1.1em; text-transform: uppercase">
+	<div class="group_head">
 		Elenco circolari
 	</div>
 	<div id="not1" class="notification"></div>
-	<div style="width: 95%; margin: auto; height: 25px; text-align: center; text-transform: uppercase; font-weight: bold; border: 1px solid rgb(211, 222, 199); outline-style: double; outline-color: rgb(211, 222, 199); background-color: rgba(211, 222, 199, 0.7)">
-		<div style="width: 35%; float: left; position: relative; top: 30%">Oggetto</div>
-		<div style="width: 25%; float: left; position: relative; top: 30%">Data</div>
+	<div class="list_header">
+		<div style="width: 35%; float: left; position: relative; top: 30%; left: 5px">Oggetto</div>
+		<div style="width: 25%; float: left; position: relative; top: 30%; text-align: center">Data</div>
 		<div style="width: 10%; float: left; position: relative; top: 30%">Numero</div>
 		<div style="width: 10%; float: left; position: relative; top: 30%">Prot.</div>
-		<div style="width: 20%; float: left; position: relative; top: 30%">Inserita da</div>
+		<div style="width: 20%; float: left; position: relative; top: 30%; text-align: center">Inserita da</div>
 	</div>
 	<table style="width: 95%; margin: 20px auto 0 auto">
 		<tbody>

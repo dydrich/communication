@@ -14,7 +14,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id'] != 0)
 $res_eventi_p = $db->execute($sel_eventi_p);
 
 // classi
-$sel_classi = "SELECT id_classe, CONCAT_WS('', anno_corso, sezione) AS cls, rb_sedi.nome FROM rb_classi, rb_sedi WHERE sede = id_sede ORDER BY ordine_di_scuola, sezione, anno_corso";
+$sel_classi = "SELECT id_classe, CONCAT_WS('', anno_corso, sezione) AS cls, rb_sedi.nome FROM rb_classi, rb_sedi WHERE sede = id_sede ORDER BY rb_sedi.ordine_di_scuola, sezione, anno_corso";
 $res_classi = $db->execute($sel_classi);
 
 // ordini di scuola

@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: avvisi del DS</title>
-<link rel="stylesheet" href="../../intranet/teachers/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
 <script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
@@ -75,12 +76,12 @@ $(document).ready(function(){
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<div style="width: 95%; height: 30px; margin: 10px auto 0 auto; text-align: center; font-size: 1.1em; text-transform: uppercase">
+	<div class="group_head">
 		Elenco avvisi
 	</div>
 	<div id="not1" class="notification"></div>
-	<div style="width: 95%; margin: auto; height: 28px; text-align: center; text-transform: uppercase; font-weight: bold; border: 1px solid rgb(211, 222, 199); outline-style: double; outline-color: rgb(211, 222, 199); background-color: rgba(211, 222, 199, 0.7)">
-		<div style="width: 70%; float: left; position: relative; top: 30%">Testo</div>
+	<div class="list_header">
+		<div style="width: 70%; float: left; position: relative; top: 30%; left: 5px">Testo</div>
 		<div style="width: 30%; float: left; position: relative; top: 30%; text-align: left">Data scadenza</div>
 	</div>
 		<table style="width: 95%; margin: 20px auto 0 auto">
@@ -93,7 +94,9 @@ $(document).ready(function(){
                 $max = $res_notices->num_rows;
             while($notice = $res_notices->fetch_assoc()){
             	if($x > $limit) break;
-                list($data, $ora) = split(" ", $notice['ora']);
+	            if (isset($notice['ora'])) {
+                    list($data, $ora) = explode(" ", $notice['ora']);
+	            }
             ?>
             <tr class="<?php echo $row_class ?>" id="row_<?php echo $notice['id'] ?>">
                 <td style="padding-left: 10px; ">

@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<div id="groups">
-			<div class="outline_line" style="margin-top: 15px">
+			<div class="outline_line_wrapper" style="margin-top: 15px">
 				<div class="outline_cell wd_40" style="text-align: left">Gruppo</div>
 				<div class="outline_cell wd_40" style="text-align: left">Amministratore</div>
 				<div class="outline_cell wd_20" style="text-align: left">Iscritti</div>

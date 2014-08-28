@@ -9,7 +9,7 @@ $navigation_label = "eventi";
 
 $limit = 12;
 $offset = 0;
-if ($_GET['offset']){
+if (isset($_GET['offset'])){
 	$offset = $_GET['offset'];
 }
 

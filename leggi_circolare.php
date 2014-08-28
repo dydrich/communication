@@ -19,7 +19,7 @@ if ($res_allegati->num_rows > 0){
 	$circ['allegato'] = $row['file'];
 }
 
-if ($_REQUEST['read'] == 1){
+if (isset($_REQUEST['read']) && $_REQUEST['read'] == 1){
 	//echo "INSERT INTO rb_com_lettura_circolari VALUES ({$circ['id_circolare']}, {$_SESSION['__user__']->getUId()}, 1, NOW())";
 	try{
 		$db->executeUpdate("INSERT INTO rb_com_lettura_circolari VALUES ({$circ['id_circolare']}, {$_SESSION['__user__']->getUId()}, 1, NOW())");
