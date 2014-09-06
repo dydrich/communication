@@ -3,11 +3,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolare</title>
-<link rel="stylesheet" href="../../css/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="../../js/page.js"></script>
 <script>
 var dwl = function (id, url){
@@ -39,7 +38,7 @@ var dwl = function (id, url){
 			</ul>
 		</div>
 		<div style="width: 40%; margin-left: 20px; ">Protocollo <span class="bold_"><?php echo $circ['protocollo'] ?></span></div>
-		<div style="width: 90%; margin-left: 20px; margin-top: 0; clear: right">Oggetto: <span class="bold_"><?php echo $circ['oggetto'] ?></span></div>
+		<div style="width: 90%; margin-left: 20px; margin-top: 0; padding: 0; clear: both">Oggetto: <span class="bold_"><?php echo $circ['oggetto'] ?></span></div>
 		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><?php echo text2html($circ['testo']) ?></div>
 		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><?php if (isset($circ['allegato'])): ?>Allegato: <a class="dwl" href="#" onclick="dwl(<?php echo $circ['id_allegato'] ?>, '../../modules/documents/download_manager.php?doc=allegato&id=<?php echo $circ['id_allegato'] ?>')"><?php echo $circ['allegato'] ?></a><?php endif; ?></div>
 		<p class="spacer"></p>

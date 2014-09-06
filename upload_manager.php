@@ -21,8 +21,8 @@ else{
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>File uploader</title>
 <link rel="stylesheet" href="../../css/main.css" type="text/css" />
-<link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" />
 <script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript"></script>

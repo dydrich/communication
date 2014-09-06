@@ -3,11 +3,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
-<link rel="stylesheet" href="../../css/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="../../js/page.js"></script>
 <script type="text/javascript">
 </script>
@@ -54,7 +53,7 @@
 				$read = $db->executeCount($sel_read);
  	    ?>
  	    	<tr class="<?php echo $row_class; if ($read == null) echo " bold_" ?>" id="row_<?php echo $circolare['id_circolare'] ?>">
-				<td style="width: 35%; <?php print $background ?>">
+				<td style="width: 35%">
 					<a href="leggi_circolare.php?idc=<?php echo $circolare['id_circolare']; if ($read == null) echo "&read=1"  ?>"><?php print $circolare['oggetto'] ?></a>
 				</td>
 				<td style="width: 25%; text-align: center"><?php print format_date($circolare['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></td>

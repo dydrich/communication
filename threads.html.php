@@ -3,11 +3,9 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: messaggi</title>
-<link rel="stylesheet" href="../../css/reg.css" type="text/css" media="screen,projection" />
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="theme/style.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../js/jquery_themes/custom-theme/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" /><link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>//jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
 <script>
 var last_tid = <?php echo $last_tid ?>;
@@ -297,7 +295,7 @@ var check_for_updates = function(){
 	?>
 	</div>
 	<div id="message">
-		<form>
+		<form class="no_border">
 		<div id="to"><input type="text" name="target" id="target" /></div>
 		<div id="get_to"><a href="#" id="get_target"><img src="theme/36.png" style="margin-top: 4px" /></a></div>
 		<div id="msgtxt">
