@@ -24,7 +24,7 @@ $res_impegni = $db->executeQuery($sel_impegni);
 if($res_impegni->num_rows > 0){
 ?>
 
-<div id="welcome">
+<div class="welcome">
 <p id="w_head">Prossimi impegni</p>
 <?php
 while($impegno = $res_impegni->fetch_assoc()){

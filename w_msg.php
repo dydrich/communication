@@ -1,4 +1,4 @@
-		<div id="welcome">
+		<div class="welcome">
 			<p id="w_head">Messaggi e file</p>
 			<p class="w_text">
 			<?php

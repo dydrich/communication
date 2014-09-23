@@ -8,7 +8,7 @@ $res_notices = $db->executeQuery($sel_notices);
 
 if ($res_ev > 0 || $res_notices->num_rows > 0){
 ?>
-	<div id="welcome">
+	<div class="welcome">
 		<p id="w_head">Avviso <?php echo date("d/m/Y") ?></p>
 		<?php 
 		if ($res_notices->num_rows > 0){ 

@@ -50,7 +50,7 @@
 		}
 				
 		</script>
-		<div id="welcome">
+		<div class="welcome">
 			<p id="w_head">News <?php echo date("d/m/Y") ?></p>
 			<p class="w_text">
 			<?php 

@@ -23,7 +23,7 @@ $unread_count -= $_rd['count'];
 $_SESSION['__unread_count__'] = $unread_count;
 
 ?>
-		<div id="welcome">
+		<div class="welcome">
 			<p id="w_head">Circolari</p>
 			<p class="w_text">
 			<?php print $_SESSION['__circular_msg__'] ?>.<br />
