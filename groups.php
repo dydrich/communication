@@ -16,6 +16,8 @@ $navigation_label = "messaggi";
 $user_type = $_SESSION['user_type'];
 $uniqID = $_SESSION['__user__']->getUniqID();
 
-$threads = $_SESSION['threads'];
+if (isset($_SESSION['threads'])) {
+	$threads = $_SESSION['threads'];
+}
 
 include 'groups.html.php';

@@ -67,22 +67,26 @@
 				<thead>
 				<tbody>
 				<?php
-				foreach ($threads as $thread) {
-					if ($thread->getType() == 'G') {
-						$owner = $thread->getOwner();
-						if ($owner != null) {
-							$owner_name = $owner->getFullName();
+				if (isset($threads)) {
+					foreach ($threads as $thread) {
+						if ($thread->getType() == 'G') {
+							$owner = $thread->getOwner();
+							if ($owner != null) {
+								$owner_name = $owner->getFullName();
+							}
+							else {
+								$owner_name = "Admin";
+							}
+							?>
+							<tr>
+								<td style="width: 40%" class="bold_"><a
+										href="group.php?tid=<?php echo $thread->getTid() ?>"><?php echo $thread->getName() ?></a>
+								</td>
+								<td style="width: 40%"><?php echo $owner_name ?></td>
+								<td style="width: 40%"><?php echo count($thread->getUsers()) ?> iscritti</td>
+							</tr>
+						<?php
 						}
-						else {
-							$owner_name = "Admin";
-						}
-				?>
-				<tr>
-					<td style="width: 40%" class="bold_"><a href="group.php?tid=<?php echo $thread->getTid() ?>"><?php echo $thread->getName() ?></a></td>
-					<td style="width: 40%"><?php echo $owner_name ?></td>
-					<td style="width: 40%"><?php echo count($thread->getUsers()) ?> iscritti</td>
-				</tr>
-				<?php
 					}
 				}
 				?>

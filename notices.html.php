@@ -103,7 +103,7 @@ $(document).ready(function(){
                 	<div id="link_<?php echo $notice['id'] ?>" style="display: none; margin-top: 2px">
                 	<a href="notice.php?idn=<?php print $notice['id'] ?>" style="text-decoration: none; text-transform: uppercase">Modifica</a>
                 	<span style="margin-left: 5px; margin-right: 5px">|</span>
-                	<a href="notices_manager.php?action=2&_id=<?php print $news['id_news'] ?>" class="del_link" style="text-decoration: none; text-transform: uppercase">Cancella</a>
+                	<a href="notices_manager.php?action=2&_id=<?php if(isset($news)) echo $news['id_news'] ?>" class="del_link" style="text-decoration: none; text-transform: uppercase">Cancella</a>
                 	</div>
                 </td>
                 <td ><?php echo $notice['data_scadenza'] ?></td>

@@ -172,7 +172,7 @@ $(document).ready(function(){
 				if($x > $limit) break;
  	    ?>
  	    	<tr class="<?php echo $row_class ?>" id="row_<?php echo $circolare['id_circolare'] ?>">
-				<td style="width: 35%; <?php print $background ?>">
+				<td style="width: 35%">
 					<span class="ov_red"><?php print $circolare['oggetto'] ?></span>
                 	<div id="link_<?php echo $circolare['id_circolare'] ?>" style="display: none; margin-top: 2px">
                 	<a href="circolare.php?idc=<?php print $circolare['id_circolare'] ?>" style="text-decoration: none; text-transform: uppercase">Modifica</a>
