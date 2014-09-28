@@ -52,10 +52,8 @@ if ($pagine < 1) {
 $colspan = 3;
 $link = basename($_SERVER['PHP_SELF']);
 $count_name = "count_read";
-$row_class = "docs_row";
-$row_class_menu = " docs_row_menu";
+$row_class = "manager_row";
+$row_class_menu = " manager_row_menu";
 $nav_params = "&idc=".$_REQUEST['idc'];
 
 include "lettura_circolari.html.php";
-
-?>

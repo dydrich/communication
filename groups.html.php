@@ -58,8 +58,8 @@
 			</div>
 		</div>
 		<div id="groups">
-			<div class="outline_line_wrapper" style="margin-top: 15px">
-				<div class="outline_cell wd_40" style="text-align: left">Gruppo</div>
+			<div class="list_header" style="margin-top: 15px">
+				<div class="outline_cell wd_40" style="text-align: left"><span style="padding-left: 20px">Gruppo</span></div>
 				<div class="outline_cell wd_40" style="text-align: left">Amministratore</div>
 				<div class="outline_cell wd_20" style="text-align: left">Iscritti</div>
 			</div>

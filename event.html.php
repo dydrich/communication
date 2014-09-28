@@ -108,7 +108,7 @@ var registra = function(){
                 <?php
 				foreach ($_SESSION['__school_level__'] as $k => $level){
                 ?>
-                	<option <?php if($k == $evs['ordine_di_scuola']) print("selected='selected'") ?> value="<?php print $k ?>"><?php print $level ?></option>
+                	<option <?php if(isset($evs['ordine_di_scuola']) && $k == $evs['ordine_di_scuola']) print("selected='selected'") ?> value="<?php print $k ?>"><?php print $level ?></option>
                 <?php 
 				} 
 				?>
@@ -123,7 +123,7 @@ var registra = function(){
                 <?php
 				while($cls = $res_classi->fetch_assoc()){
                 ?>
-                	<option <?php if($cls['id_classe'] == $evs['classe']) print("selected='selected'") ?> value="<?php print $cls['id_classe'] ?>"><?php print $cls['cls']." (".$cls['nome'].")" ?></option>
+                	<option <?php if(isset($evs['classe']) && $cls['id_classe'] == $evs['classe']) print("selected='selected'") ?> value="<?php print $cls['id_classe'] ?>"><?php print $cls['cls']." (".$cls['nome'].")" ?></option>
                 <?php } ?>
                 </select>
             </td>

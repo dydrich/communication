@@ -80,10 +80,10 @@ $(document).ready(function(){
 	</div>
 	<div id="not1" class="notification"></div>
 	<div class="list_header">
-		<div style="width: 70%; float: left; position: relative; top: 30%; left: 5px">Testo</div>
-		<div style="width: 30%; float: left; position: relative; top: 30%; text-align: left">Data scadenza</div>
+		<div style="width: 74%; float: left; position: relative; top: 30%; left: 5px"><span style="padding-left: 15px">Testo</span></div>
+		<div style="width: 20%; float: left; position: relative; top: 30%; text-align: left">Data scadenza</div>
 	</div>
-		<table style="width: 95%; margin: 20px auto 0 auto">
+		<table style="width: 95%; margin: 0 auto 0 auto">
 		<tbody id="t_body">
             <?php
             $x = 1;
@@ -98,7 +98,7 @@ $(document).ready(function(){
 	            }
             ?>
             <tr class="<?php echo $row_class ?>" id="row_<?php echo $notice['id'] ?>">
-                <td style="padding-left: 10px; ">
+                <td style="width: 76%">
                 	<span class="ov_red" style="font-weight: normal"><?php print truncateString($notice['testo'], 72) ?></span>
                 	<div id="link_<?php echo $notice['id'] ?>" style="display: none; margin-top: 2px">
                 	<a href="notice.php?idn=<?php print $notice['id'] ?>" style="text-decoration: none; text-transform: uppercase">Modifica</a>
@@ -106,7 +106,7 @@ $(document).ready(function(){
                 	<a href="notices_manager.php?action=2&_id=<?php if(isset($news)) echo $news['id_news'] ?>" class="del_link" style="text-decoration: none; text-transform: uppercase">Cancella</a>
                 	</div>
                 </td>
-                <td ><?php echo $notice['data_scadenza'] ?></td>
+                <td ><?php echo format_date($notice['data_scadenza'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></td>
             </tr>
             <?php
                 $x++;

@@ -81,11 +81,11 @@ $(document).ready(function(){
 	</div>
 	<div id="not1" class="notification"></div>
 	<div class="list_header">
-		<div style="width: 65%; float: left; position: relative; top: 20%; text-align: left"><span style="padding-left: 15px">Attivit&agrave;</span></div>
+		<div style="width: 65%; float: left; position: relative; top: 20%; text-align: left"><span style="padding-left: 25px">Attivit&agrave;</span></div>
 		<div style="width: 15%; float: left; position: relative; top: 30%; text-align: left">Utente</div>
 		<div style="width: 20%; float: left; position: relative; top: 30%">Data e ora evento</div>
 	</div>
-		<table style="width: 95%; margin: 20px auto 0 auto">
+		<table style="width: 95%; margin: 0px auto 0 auto">
 		<tbody id="t_body">
             <?php
             $x = 1;
@@ -96,7 +96,7 @@ $(document).ready(function(){
 
             while($event = $res_evs->fetch_assoc()){
                 if($x > $limit) break;
-                list($data, $ora) = split(" ", $event['data_evento']);
+                list($data, $ora) = explode(" ", $event['data_evento']);
                 $ora = substr($ora, 0, 5);
                 $js = "evento(".$event['id_evento'].")";
                 $scaduto = 0;
@@ -111,7 +111,7 @@ $(document).ready(function(){
             ?>
             <tr class="<?php echo $row_class ?>" id="row_<?php echo $event['id_evento'] ?>">
                 <td style="width: 65%">
-                	<span class="ov_red" style="font-weight: bold; padding-left: 15px"><?php echo utf8_decode($event['abstract']) ?></span>
+                	<span class="ov_red" style="font-weight: bold"><?php echo utf8_decode($event['abstract']) ?></span>
                 	<div id="link_<?php echo $event['id_evento'] ?>" style="display: none">
                 	<a href="event.php?id=<?php echo $event['id_evento'] ?>" class="mod_link" style="text-decoration: none; text-transform: uppercase">Modifica</a>
                 	<span style="margin-left: 5px; margin-right: 5px">|</span>

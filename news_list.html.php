@@ -80,11 +80,11 @@ $(document).ready(function(){
 	</div>
 	<div id="not1" class="notification"></div>
 	<div class="list_header">
-		<div style="width: 65%; float: left; position: relative; top: 30%">Titolo</div>
+		<div style="width: 65%; float: left; position: relative; top: 30%"><span style="padding-left: 15px">Titolo</span></div>
 		<div style="width: 15%; float: left; position: relative; top: 30%; text-align: left">Utente</div>
-		<div style="width: 20%; float: left; position: relative; top: 30%">Data e ora Inserimento</div>
+		<div style="width: 20%; float: left; position: relative; top: 30%">Inserimento</div>
 	</div>
-		<table style="width: 95%; margin: 20px auto 0 auto">
+		<table style="width: 95%; margin: 0 auto 0 auto">
 		<tbody id="t_body">
             <?php
             $x = 1;
@@ -97,7 +97,7 @@ $(document).ready(function(){
                 list($data, $ora) = split(" ", $news['ora']);
             ?>
             <tr class="<?php echo $row_class ?>" id="row_<?php echo $news['id_news'] ?>">
-                <td style="width: 65%; padding-left: 10px; ">
+                <td style="width: 65%">
                 	<span class="ov_red" style="font-weight: normal"><?php print utf8_decode(truncateString($news['abstract'], 72)) ?></span>
                 	<div id="link_<?php echo $news['id_news'] ?>" style="display: none; margin-top: 2px">
                 	<a href="news.php?idn=<?php print $news['id_news'] ?>" style="text-decoration: none; text-transform: uppercase">Modifica</a>

@@ -145,13 +145,13 @@ $(document).ready(function(){
 	</div>
 	<div id="not1" class="notification"></div>
 	<div class="list_header">
-		<div style="width: 35%; float: left; position: relative; top: 30%; left: 5px">Oggetto</div>
+		<div style="width: 35%; float: left; position: relative; top: 30%; left: 5px"><span style="padding-left: 15px">Oggetto</span></div>
 		<div style="width: 25%; float: left; position: relative; top: 30%; text-align: center">Data</div>
 		<div style="width: 10%; float: left; position: relative; top: 30%">Numero</div>
 		<div style="width: 10%; float: left; position: relative; top: 30%">Prot.</div>
-		<div style="width: 20%; float: left; position: relative; top: 30%; text-align: center">Inserita da</div>
+		<div style="width: 20%; float: left; position: relative; top: 30%; text-align: left">Inserita da</div>
 	</div>
-	<table style="width: 95%; margin: 20px auto 0 auto">
+	<table style="width: 95%; margin: 0 auto 0 auto">
 		<tbody>
  	    <?php 
  	    if($result->num_rows < 1){
