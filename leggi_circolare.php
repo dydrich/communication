@@ -5,8 +5,6 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM);
 
-$navigation_label = "lettura circolare";
-
 $sel_circ = "SELECT * FROM rb_com_circolari WHERE id_circolare = {$_REQUEST['idc']}";
 $res_circ = $db->execute($sel_circ);
 $circ = $res_circ->fetch_assoc();
@@ -27,5 +25,7 @@ if (isset($_REQUEST['read']) && $_REQUEST['read'] == 1){
 		$ex->redirect();
 	}
 }
+
+$drawer_label = "Circolare n. ". $circ['progressivo'] ." del ". format_date($circ['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ;
 
 include "leggi_circolare.html.php";

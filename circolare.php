@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM);
 
-$navigation_label = "circolare";
+$drawer_label = "Dettaglio circolare";
 
 $action = "new";
 $idc = 0;
@@ -25,5 +25,3 @@ if($_REQUEST['idc'] != 0){
 }
 
 include "circolare.html.php";
-
-?>

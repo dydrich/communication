@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM);
 
-$navigation_label = "circolari";
+$drawer_label = "Gestione circolari";
 
 if (!isset($_REQUEST['offset'])) {
 	$offset = 0;
@@ -32,12 +32,6 @@ else{
 	$result = $db->execute($query);
 }
 
-$messages = array("Circolare inserita correttamente", "Circolare non inserita", "Circolare modificata correttamente", "Circolare non modificata", "Circolare eliminata correttamente", "Circolare non eliminata");
-$msg = "";
-if(isset($_REQUEST['msg'])){
-	$msg = $messages[$_REQUEST['msg']];
-}
-
 if ($offset == 0) {
 	$page = 1;
 }
@@ -58,5 +52,3 @@ $row_class = "manager_row";
 $row_class_menu = " manager_row_menu";
 
 include 'circolari.html.php';
-
-?>

@@ -7,10 +7,13 @@
 <link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" /><link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>//jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="../../js/page.js"></script>
 <script>
 var last_tid = <?php echo $last_tid ?>;
 var last_msg = <?php echo $last_msg ?>;
-$(document).ready(function(){
+$(function(){
+	load_jalert();
+	setOverlayEvent();
 	$('#newmsg_lnk').click(function(event){
 		event.preventDefault();
 		$('#threads').slideUp(1500);
@@ -56,6 +59,7 @@ $(function() {
 });
 
 var send_message = function(){
+	//alert($('#targetID').val());
 	$.ajax({
 		type: "POST",
 		url: "controller.php?do=send&tid=0",
@@ -83,10 +87,10 @@ var send_message = function(){
 			
 			div_th = document.createElement("DIV");
 			div_th.setAttribute("id", "thread_"+json.thread);
-			div_th.setAttribute("class", "thread");
+			div_th.setAttribute("class", "card");
 			
 			div_h = document.createElement("div");
-			div_h.setAttribute("class", "thread_header");
+			div_h.setAttribute("class", "card_title");
 			
 			div_user = document.createElement("div");
 			div_user.setAttribute("class", "thread_user");
@@ -101,7 +105,7 @@ var send_message = function(){
 			//div_lm.appendChild(document.createTextNode(json.date));
 
 			div_txt = document.createElement("div");
-			div_txt.setAttribute("class", "thread_text");
+			div_txt.setAttribute("class", "card_content");
 			div_txt.appendChild(document.createTextNode(json.text));
 
 			div_h.appendChild(div_user);
@@ -119,6 +123,8 @@ var send_message = function(){
 			$('#message').hide(1500);
 			$('#newmsg').show();
 			$('#viewlist').hide();
+			last_tid = json.thread;
+			last_msg = json.mid;
 		}
 	});
 };
@@ -180,10 +186,10 @@ var check_for_updates = function(){
 					div_th = document.createElement("div");
 					div_th.setAttribute("id", "thread_"+t.tid);
 					div_th.setAttribute("display", "none");
-					div_th.setAttribute("class", "thread");
+					div_th.setAttribute("class", "card");
 
 					div_h = document.createElement("div");
-					div_h.setAttribute("class", "thread_header bold_");
+					div_h.setAttribute("class", "card_title bold_");
 
 					div_user = document.createElement("div");
 					div_user.setAttribute("class", "thread_user");
@@ -202,7 +208,7 @@ var check_for_updates = function(){
 					//div_lm.appendChild(document.createTextNode(t.datetime));
 
 					div_txt = document.createElement("div");
-					div_txt.setAttribute("class", "thread_text");
+					div_txt.setAttribute("class", "card_content");
 					div_txt.appendChild(document.createTextNode(t.text));
 
 					div_user.appendChild(span);
@@ -231,22 +237,13 @@ var check_for_updates = function(){
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>
-<?php include "navigation.php" ?>
+<?php include "navigation_th.php" ?>
 <div id="main">
 <div id="right_col">
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<div id="navbar">
-		<div id="username">Messaggi di <?php echo $_SESSION['__user__']->getFullName() ?></div>
-		<div id="newmsg">
-			<a href="#" id="newmsg_lnk"><img src="theme/new_mail.png" style="" /></a>
-		</div>
-		<div id="viewlist">
-			<a href="#" id="viewlist_lnk"><img src="theme/view-list-icon.png" style="width: 32px; height: 32px; margin-top: 4px" /></a>
-		</div>
-	</div>
-	<div id="threads">
+	<div id="threads" class="card_container" style="margin-top: 25px">
 	<?php
 	if (isset($threads) && count($threads) > 0){
 		foreach ($ordered_threads as $k => $thread){
@@ -280,13 +277,13 @@ var check_for_updates = function(){
 			}
 	?>
 		<a href="controller.php?do=show_thread&tid=<?php echo $thread->getTid() ?>" id="ln_<?php echo $thread->getTid() ?>" class="th_link">
-		<div id="thread_<?php echo $thread->getTid(); ?>" class="thread">
-			<div id="head_thr_<?php echo $thread->getTid() ?>" class="thread_header <?php if (!$thread->isRead($_SESSION['__user__'])) echo "bold_" ?>">
+		<div id="thread_<?php echo $thread->getTid(); ?>" class="card">
+			<div id="head_thr_<?php echo $thread->getTid() ?>" class="card_title <?php if (!$thread->isRead($_SESSION['__user__'])) echo "bold_" ?>">
 				<div id="thread_user_<?php echo $thread->getTid() ?>" class="thread_user"><?php echo $thread->getTargetName($_SESSION['__user__']->getUniqID()); if ($thread->isRead($_SESSION['__user__']) === false): ?><span class="new_msg_sign">(nuovi messaggi)</span><?php endif; ?></div>
 				<div id="date_thr_<?php echo $thread->getTid() ?>" class="thread_msg_count"><?php echo $date." ".substr($time, 0, 5) ?></div>
 				<!--<div id="count_thr_<?php echo $thread->getTid() ?>" class="thread_lm"><?php echo $thread->getMessagesCount() ?> messaggi</div> -->
 			</div>
-			<div id="txt_thr_<?php echo $thread->getTid() ?>" class="thread_text"><?php echo $text ?></div>
+			<div id="txt_thr_<?php echo $thread->getTid() ?>" class="card_content" style="color: #1E4389"><?php echo $text ?></div>
 		</div>
 		</a>
 	<?php
@@ -313,5 +310,21 @@ var check_for_updates = function(){
 <p class="spacer"></p>
 </div>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/footer.php" ?>
+<div id="drawer" class="drawer" style="display: none; position: absolute">
+	<div style="width: 100%; height: 430px">
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/index.php"><img src="../../images/6.png" style="margin-right: 10px; position: relative; top: 5%" />Home</a></div>
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/profile.php"><img src="../../images/33.png" style="margin-right: 10px; position: relative; top: 5%" />Profilo</a></div>
+		<?php if (!$_SESSION['__user__'] instanceof ParentBean) : ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/documents/load_module.php?module=docs&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/11.png" style="margin-right: 10px; position: relative; top: 5%" />Documenti</a></div>
+		<?php endif; ?>
+		<?php if(is_installed("com")){ ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/communication/load_module.php?module=com&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/57.png" style="margin-right: 10px; position: relative; top: 5%" />Comunicazioni</a></div>
+		<?php } ?>
+	</div>
+	<?php if (isset($_SESSION['__sudoer__'])): ?>
+		<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>admin/sudo_manager.php?action=back"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/14.png" style="margin-right: 10px; position: relative; top: 5%" />DeSuDo</a></div>
+	<?php endif; ?>
+	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
+</div>
 </body>
 </html>

@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 
-$navigation_label = "dettaglio news";
+$drawer_label = "Dettaglio news";
 
 $action = 1;
 $idnews = 0;
@@ -23,5 +23,3 @@ if($_REQUEST['idn'] != 0){
 }
 
 include "news.html.php";
-
-?>

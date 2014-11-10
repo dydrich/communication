@@ -5,9 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 
-$navigation_label = "eventi";
-
-$limit = 12;
+$limit = 10;
 $offset = 0;
 if (isset($_GET['offset'])){
 	$offset = $_GET['offset'];
@@ -41,7 +39,7 @@ $link = basename($_SERVER['PHP_SELF']);
 $count_name = "count_evs";
 $row_class = "manager_row";
 $row_class_menu = " manager_row_menu";
+$drawer_label = "Elenco eventi";
 
 include "events.html.php";
 
-?>

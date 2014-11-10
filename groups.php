@@ -11,7 +11,7 @@ require_once "../../lib/RBUtilities.php";
 
 check_session();
 
-$navigation_label = "messaggi";
+$drawer_label = "Gruppi di conversazione";
 
 $user_type = $_SESSION['user_type'];
 $uniqID = $_SESSION['__user__']->getUniqID();

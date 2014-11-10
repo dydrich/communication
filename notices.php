@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM);
 
-$navigation_label = "avvisi";
+$drawer_label = "Elenco avvisi";
 
 if (!isset($_REQUEST['offset'])) {
 	$offset = 0;
@@ -53,5 +53,3 @@ $row_class = "manager_row";
 $row_class_menu = " manager_row_menu";
 
 include "notices.html.php";
-
-?>

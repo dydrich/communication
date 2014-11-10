@@ -11,69 +11,9 @@
 <script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
 <script type="text/javascript" src="../../js/page.js"></script>
 <script type="text/javascript">
-function check_form(frm){
-	var ind = 0;
-	var msg = "Il modulo non e' stato compilato correttamente. Sono stati riscontrati i seguenti errori:\n";
-	var bool = true;
-	//alert(isNaN(parseFloat(frm.num_c.value)));
-	if((frm.num_c.value == "0") || (isNaN(parseFloat(frm.num_c.value)))){
-		ind++;
-		msg += "\n"+ind+". Numero di circolare assente o errato";
-		$('lab1').style.color = "#ff0000";
-		bool = false;
-	}
-	else
-		$('lab1').style.color = "inherit";
-	
-	if(trim(frm.data.value) == ""){
-		ind++;
-		msg += "\n"+ind+". Data non inserita";
-		$('lab3').style.color = "#ff0000";
-		bool = false;
-	}
-	else if(!valida_data(frm.data.value)){
-		ind++;
-		msg += "\n"+ind+". Data non corretta";
-		$('lab3').style.color = "#ff0000";
-		frm.data.value = "";
-		bool = false;
-	}
-	else
-		$('lab3').style.color = "inherit";
-	
-	if(trim(frm.obj.value) == ""){
-		ind++;
-		msg += "\n"+ind+". Oggetto non inserito";
-		$('lab4').style.color = "#ff0000";
-		bool = false;
-	}
-	else
-		$('lab4').style.color = "inherit";
-	
-	if(trim(frm.dest.value) == ""){
-		ind++;
-		msg += "\n"+ind+". Destinatari assenti";
-		$('lab5').style.color = "#ff0000";
-		bool = false;
-	}
-	else
-		$('lab5').style.color = "inherit";
-	
-	if(trim(frm.txt.value) == ""){
-		ind++;
-		msg += "\n"+ind+". Testo della circolare assente";
-		$('lab6').style.color = "#ff0000";
-		bool = false;
-	}
-	else
-		$('lab6').style.color = "inherit";
-	
-	if(!bool)
-		alert(msg);
-	return bool;
-}
-
+	var circ = 0;
 function del_circ(id){
+	$('#hid').hide();
 	if(!confirm("Sei sicuro di voler cancellare questa circolare?"))
         return false;
 
@@ -105,21 +45,44 @@ function del_circ(id){
 	});
 }
 
-$(document).ready(function(){
-	$('table tbody > tr').mouseover(function(event){
-		//alert(this.id);
-		var strs = this.id.split("_");
-		$('#link_'+strs[1]).show();
-	});
-	$('table tbody > tr').mouseout(function(event){
-			//alert(this.id);
-			var strs = this.id.split("_");
-			$('#link_'+strs[1]).hide();
-	});
-	$('table tbody a.del_link').click(function(event){
+var show_menu = function(id) {
+	if ($('#hid').is(":visible")) {
+		$('#hid').slideUp(500);
+		return false;
+	}
+	circ = id;
+	var offset = $('#menu_'+id).offset();
+	var top = offset.top + 18;
+	var left = offset.left - $('#hid').width() + ($('#menu_'+id).width() / 2) - 5;
+	$('#hid').css({top: top+"px", left: left+"px"});
+	$('#classname').text($('#ren_'+id).text());
+	$('#hid').slideDown();
+};
+
+$(function(){
+	load_jalert();
+	setOverlayEvent();
+	$('a.del_link').click(function(event){
 		event.preventDefault();
-		var strs = this.parentNode.id.split("_");
+		var strs = $(this).parent().attr("id").split("_");
 		del_circ(strs[1]);
+	});
+	$('a.showmenu').click(function(event){
+		event.preventDefault();
+		var strs = $(this).parent().attr("id").split("_");
+		show_menu(strs[1]);
+	});
+	$('#mod_link').click(function(event){
+		event.preventDefault();
+		document.location.href = "circolare.php?idc="+circ;
+	});
+	$('#del_link').click(function(event){
+		event.preventDefault();
+		document.location.href = "circ_manager.php?action=2&_id="+circ;
+	});
+	$('#ver_link').click(function(event){
+		event.preventDefault();
+		document.location.href = "lettura_circolari.php?idc="+circ;
 	});
 });
 </script>
@@ -136,29 +99,16 @@ $(document).ready(function(){
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>
 <?php include "navigation.php" ?>
 <div id="main">
-<div id="right_col">
-<?php include "menu.php" ?>
-</div>
-<div id="left_col">
-	<div class="group_head">
-		Elenco circolari
+	<div id="right_col">
+	<?php include "menu.php" ?>
 	</div>
-	<div id="not1" class="notification"></div>
-	<div class="list_header">
-		<div style="width: 35%; float: left; position: relative; top: 30%; left: 5px"><span style="padding-left: 15px">Oggetto</span></div>
-		<div style="width: 25%; float: left; position: relative; top: 30%; text-align: center">Data</div>
-		<div style="width: 10%; float: left; position: relative; top: 30%">Numero</div>
-		<div style="width: 10%; float: left; position: relative; top: 30%">Prot.</div>
-		<div style="width: 20%; float: left; position: relative; top: 30%; text-align: left">Inserita da</div>
-	</div>
-	<table style="width: 95%; margin: 0 auto 0 auto">
-		<tbody>
+	<div id="left_col">
+		<div class="card_container">
  	    <?php 
  	    if($result->num_rows < 1){
  	    ?>
- 	    <tr>
-			<td colspan="5" style="height: 50px; text-align: center; font-weight: bold; text-transform: uppercase">Nessuna circolare presente</td>
-		</tr>
+ 	    <div style="text-align: center; font-weight: bold; width: 90%; margin: auto; font-size: 1.1em">Nessuna circolare presente</div>
+
  	    <?php 
  	    }
  	    else{
@@ -171,42 +121,61 @@ $(document).ready(function(){
 			while ($circolare = $result->fetch_assoc()){
 				if($x > $limit) break;
  	    ?>
- 	    	<tr class="<?php echo $row_class ?>" id="row_<?php echo $circolare['id_circolare'] ?>">
-				<td style="width: 35%">
-					<span class="ov_red"><?php print $circolare['oggetto'] ?></span>
-                	<div id="link_<?php echo $circolare['id_circolare'] ?>" style="display: none; margin-top: 2px">
-                	<a href="circolare.php?idc=<?php print $circolare['id_circolare'] ?>" style="text-decoration: none; text-transform: uppercase">Modifica</a>
-                	<span style="margin-left: 5px; margin-right: 5px">|</span>
-                	<a href="circ_manager.php?action=2&_id=<?php print $circolare['id_circolare'] ?>" class="del_link" style="text-decoration: none; text-transform: uppercase">Cancella</a>
-                	<span style="margin-left: 5px; margin-right: 5px">|</span>
-                	<a href="lettura_circolari.php?idc=<?php print $circolare['id_circolare'] ?>" class="ver_link" style="text-decoration: none; text-transform: uppercase">Lettura</a>
-                	</div>
-				</td>
-				<td style="width: 25%; text-align: center"><?php print format_date($circolare['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></td>
-				<td style="width: 10%; text-align: center"><?php print $circolare['progressivo'] ?></td>
-				<td style="width: 10%; text-align: center"><?php print $circolare['protocollo'] ?></td>
-				<td style="width: 20%; text-align: center"><?php print $circolare['nome']." ".$circolare['cognome'] ?></td>
-			</tr>
+			<div class="card" id="row_<?php echo $circolare['id_circolare'] ?>">
+				<div class="card_title">
+					<?php echo truncateString($circolare['oggetto'], 90) ?>
+					<div id="menu_<?php echo $circolare['id_circolare'] ?>" style="width: 20px; float: right; margin-right: 0">
+						<a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/no_js.php" class="showmenu"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/menu.png" /></a>
+					</div>
+				</div>
+				<div class="card_varcontent" style="overflow: hidden">
+					<div class="card_row">
+						Circolare n. <?php echo $circolare['progressivo'] ?> del <?php echo format_date($circolare['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?>
+					</div>
+					<div class="minicard">
+						Inserita da <?php echo $circolare['nome']." ".$circolare['cognome'] ?>
+					</div>
+					<div class="minicard" style="margin-left: 7.5%">
+						Protocollo: <?php echo $circolare['protocollo'] ?>
+					</div>
+				</div>
+			</div>
+
  	    <?php 
  	    		$row++;
  	    		$x++;
  	    	}
  	    ?>
- 	    </tbody>
-        <tfoot>
         <?php
             $expand = false;
             include "../../shared/navigate.php";
  	    }
  	    ?>
- 	    <tr style="text-align: right; font-weight: normal; ">
-				<td colspan="5" style="padding-top: 20px"><a href="circolare.php?idc=0" style="text-decoration: none; text-transform: uppercase">Nuova circolare</a></td>
-		</tr>
-		</tfoot>	
- 	</table>	
+		</div>
 	</div>
 <p class="spacer"></p>
 </div>
-<?php include "../../intranet/{$_SESSION['__mod_area__']}/footer.php" ?>	
+<?php include "../../intranet/{$_SESSION['__mod_area__']}/footer.php" ?>
+<div id="drawer" class="drawer" style="display: none; position: absolute">
+	<div style="width: 100%; height: 430px">
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/index.php"><img src="../../images/6.png" style="margin-right: 10px; position: relative; top: 5%" />Home</a></div>
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/profile.php"><img src="../../images/33.png" style="margin-right: 10px; position: relative; top: 5%" />Profilo</a></div>
+		<?php if (!$_SESSION['__user__'] instanceof ParentBean) : ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/documents/load_module.php?module=docs&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/11.png" style="margin-right: 10px; position: relative; top: 5%" />Documenti</a></div>
+		<?php endif; ?>
+		<?php if(is_installed("com")){ ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/communication/load_module.php?module=com&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/57.png" style="margin-right: 10px; position: relative; top: 5%" />Comunicazioni</a></div>
+		<?php } ?>
+	</div>
+	<?php if (isset($_SESSION['__sudoer__'])): ?>
+		<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>admin/sudo_manager.php?action=back"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/14.png" style="margin-right: 10px; position: relative; top: 5%" />DeSuDo</a></div>
+	<?php endif; ?>
+	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
+</div>
+<div id="hid" style="position: absolute; width: 150px; height: 120px; display: none; ">
+	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="mod_link" style="text-decoration: none">Modifica</a></p>
+	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="del_link" style="text-decoration: none">Cancella</a></p>
+	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="ver_link" style="text-decoration: none">Lettura</a></p>
+</div>
 </body>
 </html>

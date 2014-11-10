@@ -25,4 +25,6 @@ try{
 	echo $ex->getMessage();
 }
 
+$drawer_label = "Dettaglio conversazione";
+
 include "thread.html.php";

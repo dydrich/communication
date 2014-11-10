@@ -47,14 +47,21 @@ $rb = RBUtilities::getInstance($db);
 if ($res_th->num_rows > 0){
 	$threads = array();
 	while ($th = $res_th->fetch_assoc()){
-		if ($th['owner'] != "") {
+		if ($th['owner'] != "" && $th['owner'] != null) {
 			$owner = $rb->loadUserFromUniqID($th['owner']);
 			//$other_user = $u2;
 		}
 		else {
 			$owner = "";
 		}
-		$thread = new Thread($th['tid'], new MySQLDataLoader($db), $th['creation']);
+		try {
+			$thread = new Thread($th['tid'], new MySQLDataLoader($db), $th['creation']);
+		} catch (MySQLException $ex) {
+			echo $ex->getMessage()."<br>";
+			echo __FILE__."<br>";
+			echo $ex->getQuery()."<br>";
+			exit;
+		}
 		if ($th['type'] == 'G') {
 			$thread->setName($th['name']);
 			$thread->setType('G');

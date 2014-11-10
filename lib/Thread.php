@@ -50,12 +50,16 @@ class Thread {
 	 */
 
     public function __construct($tid, DataLoader $ds, $cd, $name = null, $type = 'C', $users = null){
-        $this->tid = $tid;
+	    $this->tid = $tid;
         $this->datasource = $ds;
-	    $this->users = $users;
 	    $this->lastAccesses = array();
         $this->loadMessages();
-	    $this->loadUsers();
+	     if ($users == null) {
+		    $this->loadUsers();
+	    }
+	    else {
+		   $this->users = $users;
+	    }
         $this->last_message = null;
 	    $this->systemThread = 0;
 	    $this->creationDate = $cd;
@@ -75,6 +79,7 @@ class Thread {
 				$this->lastAccesses[$row['utente']] = $row['last_access'];
 			}
 		}
+		print_r($this->users);
 	}
 
     public function getMessage($mid){
@@ -352,7 +357,7 @@ class Thread {
 		if ($this->owner != null) {
 			$ownerID = $this->owner->getUniqID();
 		}
-		$this->tid = $this->datasource->executeUpdate("INSERT INTO rb_com_threads (owner, last_message, system, name) VALUES (".field_null($ownerID, false).", NULL, {$this->systemThread}, ".field_null($this->name, true).")");
+		$this->tid = $this->datasource->executeUpdate("INSERT INTO rb_com_threads (owner, last_message, system, name, type, creation) VALUES (".field_null($ownerID, false).", NULL, {$this->systemThread}, ".field_null($this->name, true).", '{$this->type}', '{$this->creationDate}')");
 		foreach ($this->users as $user) {
 			$this->datasource->executeUpdate("INSERT INTO rb_com_utenti_thread (thread, utente) VALUES ({$this->tid}, {$user})");
 		}

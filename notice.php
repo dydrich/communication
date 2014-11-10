@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM);
 
-$navigation_label = "avviso";
+$drawer_label = "Gestione avviso";
 
 $action = 1;
 $idnotice = 0;
@@ -23,5 +23,3 @@ if($_REQUEST['idn'] != 0){
 }
 
 include "notice.html.php";
-
-?>

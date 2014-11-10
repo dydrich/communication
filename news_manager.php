@@ -17,7 +17,7 @@ switch($_POST['action']){
 		break;
 	case 2:     // cancellazione
 		$statement = "DELETE FROM rb_com_news WHERE id_news = ".$_REQUEST['_i'];
-		$msg = "News cancella";
+		$msg = "News cancellata";
 		break;
 	case 3:     // modifica
 		$statement = "UPDATE rb_com_news set abstract = '$titolo', testo = '$testo' WHERE id_news = ".$_REQUEST['_i'];

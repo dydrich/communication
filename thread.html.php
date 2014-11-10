@@ -1,190 +1,193 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: messaggi</title>
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
-<script>
-$(document).ready(function(){
-	$('#newmsg_lnk').click(function(event){
-		event.preventDefault();
-		$('#txt').val("");
-		$('#message').show(1500);
-		$('#newmsg').hide(1500);
-		$('#viewlist').show(1500);
-		$('#sel_thread').hide(1500);
-		window.setTimeout(function(){
-			$('#txt').focus();
-		}, 1500);
-	});
-	$('#viewlist_lnk').click(function(event){
-		event.preventDefault();
-		$('#sel_thread').show(1500);
-		$('#message').hide(1500);
-		$('#newmsg').show(1500);
-		$('#viewlist').hide(1500);
-	});
-	$('#send_lnk').click(function(event){
-		event.preventDefault();
-		send_message();
-	});
-	$('#get_target').click(function(event){
-		event.preventDefault();
-		$('#targets').show();
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: messaggi</title>
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
+	<script type="text/javascript" src="../../js/page.js"></script>
+	<script>
+	$(function(){
+		load_jalert();
+		setOverlayEvent();
+		$('#newmsg_lnk').click(function(event){
+			event.preventDefault();
+			$('#txt').val("");
+			$('#message').show(1500);
+			$('#newmsg').hide(1500);
+			$('#viewlist').show(1500);
+			$('#sel_thread').hide(1500);
+			window.setTimeout(function(){
+				$('#txt').focus();
+			}, 1500);
+		});
+		$('#viewlist_lnk').click(function(event){
+			event.preventDefault();
+			$('#sel_thread').show(1500);
+			$('#message').hide(1500);
+			$('#newmsg').show(1500);
+			$('#viewlist').hide(1500);
+		});
+		$('#send_lnk').click(function(event){
+			event.preventDefault();
+			send_message();
+		});
+		$('#get_target').click(function(event){
+			event.preventDefault();
+			$('#targets').show();
+		});
+
+		$('#txt').show_char_limit({
+			status_element: '#char_left',
+			status_style: 'chars_left',
+			maxlength: 400
+		});
+
+		interval = window.setInterval(check_for_updates, 5000);
+
 	});
 
-	$('#txt').show_char_limit({ 
-		status_element: '#char_left', 
-		status_style: 'chars_left', 
-		maxlength: 400 
-	});
+	var check_for_updates = function(){
+		last_msg = <?php if (count($thread->getMessages()) > 0) echo $thread->getLastMessage()->getID(); else echo 0 ?>;
+		tid = <?php echo $thread->getTid() ?>;
+		upd = "msg";
+		var p = document.getElementsByTagName("audio")[0];
+		$.ajax({
+			type: "POST",
+			url: "check_for_updates.php",
+			data: {msg: last_msg, tid: tid, upd: upd},
+			dataType: 'json',
+			error: function() {
 
-	interval = window.setInterval(check_for_updates, 5000);
-	
-});
+			},
+			succes: function() {
 
-var check_for_updates = function(){
-	last_msg = <?php if (count($thread->getMessages()) > 0) echo $thread->getLastMessage()->getID(); else echo 0 ?>;
-	tid = <?php echo $thread->getTid() ?>;
-	upd = "msg";
-	var p = document.getElementsByTagName("audio")[0];
-	$.ajax({
-		type: "POST",
-		url: "check_for_updates.php",
-		data: {msg: last_msg, tid: tid, upd: upd},
-		dataType: 'json',
-		error: function() {
+			},
+			complete: function(data){
+				r = data.responseText;
+				if(r == "null"){
+					return false;
+				}
+				var json = $.parseJSON(r);
+				$.each(json, function(){
+					var t = this;
+					if (this.type == "new"){
+						div_msg = document.createElement("div");
+						div_msg.setAttribute("id", "msg_"+t.mid);
+						div_msg.setAttribute("display", "none");
+						div_msg.setAttribute("class", "message_detail target_msg");
 
-		},
-		succes: function() {
-			
-		},
-		complete: function(data){
-			r = data.responseText;
-			if(r == "null"){
-				return false;
-			}
-			var json = $.parseJSON(r);
-			$.each(json, function(){
-				var t = this;
-				if (this.type == "new"){
-					div_msg = document.createElement("div");
-					div_msg.setAttribute("id", "msg_"+t.mid);
-					div_msg.setAttribute("display", "none");
-					div_msg.setAttribute("class", "message_detail target_msg");
-		
-					div_h = document.createElement("div");
-					div_h.setAttribute("class", "msg_header");
-		
-					div_send = document.createElement("div");
-					div_send.setAttribute("class", "msg_send");
-					if (t.t_t != 'G') {
-						div_send.appendChild(document.createTextNode(t.send));
+						div_h = document.createElement("div");
+						div_h.setAttribute("class", "msg_header");
+
+						div_send = document.createElement("div");
+						div_send.setAttribute("class", "msg_send");
+						if (t.t_t != 'G') {
+							div_send.appendChild(document.createTextNode(t.send));
+						}
+						else {
+
+						}
+
+						div_read = document.createElement("div");
+						div_read.setAttribute("class", "msg_read");
+						if (t.t_t != 'G') {
+							div_read.appendChild(document.createTextNode("Letto "+t.read));
+						}
+						else {
+							div_read.appendChild(document.createTextNode(t.send));
+						}
+
+						div_txt = document.createElement("div");
+						div_txt.setAttribute("class", "msg_text");
+						div_txt.appendChild(document.createTextNode(t.text));
+
+						div_h.appendChild(div_send);
+						div_h.appendChild(div_read);
+
+						div_msg.appendChild(div_h);
+						div_msg.appendChild(div_txt);
+
+						$('#sel_thread').prepend(div_msg);
+						$('#msg_'+t.mid).hide();
+						$('#msg_'+t.mid).toggle({effect: 'scale', percent: 150});
+						p.play();
 					}
 					else {
-
+						mid = t.mid;
+						$('#read_'+mid).text("Letto "+t.read);
 					}
-		
-					div_read = document.createElement("div");
-					div_read.setAttribute("class", "msg_read");
-					if (t.t_t != 'G') {
-						div_read.appendChild(document.createTextNode("Letto "+t.read));
-					}
-					else {
-						div_read.appendChild(document.createTextNode(t.send));
-					}
-		
-					div_txt = document.createElement("div");
-					div_txt.setAttribute("class", "msg_text");
-					div_txt.appendChild(document.createTextNode(t.text));
-		
-					div_h.appendChild(div_send);
-					div_h.appendChild(div_read);
-		
-					div_msg.appendChild(div_h);
-					div_msg.appendChild(div_txt);
-
-					$('#oth_user').after(div_msg);
-					$('#msg_'+t.mid).hide();
-					$('#msg_'+t.mid).toggle({effect: 'scale', percent: 150});
-					p.play();
-				}
-				else {
-					mid = t.mid;
-					$('#read_'+mid).text("Letto "+t.read);
-				}
-			});
-		}
-	});
-};
-
-var send_message = function(){
-	$.ajax({
-		type: "POST",
-		url: "controller.php?do=send&tid=<?php echo $thread->getTid() ?>",
-		data: $('form').serialize(),
-		error: function() {
-
-		},
-		succes: function() {
-			alert("Message sent");
-			
-		},
-		complete: function(data){
-			//$('#target').val("");
-			r = data.responseText;
-			if(r == "null"){
-				return false;
+				});
 			}
-			var json = $.parseJSON(r);
+		});
+	};
 
-			div_msg = document.createElement("div");
-			div_msg.setAttribute("id", "msg_"+json.mid);
-			div_msg.setAttribute("display", "none");
-			div_msg.setAttribute("class", "message_detail my_msg");
+	var send_message = function(){
+		$.ajax({
+			type: "POST",
+			url: "controller.php?do=send&tid=<?php echo $thread->getTid() ?>",
+			data: $('form').serialize(),
+			error: function() {
 
-			div_h = document.createElement("div");
-			div_h.setAttribute("class", "msg_header");
+			},
+			succes: function() {
+				alert("Message sent");
 
-			div_send = document.createElement("div");
-			div_send.setAttribute("class", "msg_send");
-			div_send.appendChild(document.createTextNode(json.date));
+			},
+			complete: function(data){
+				//$('#target').val("");
+				r = data.responseText;
+				if(r == "null"){
+					return false;
+				}
+				var json = $.parseJSON(r);
 
-			div_read = document.createElement("div");
-			div_read.setAttribute("class", "msg_read");
-			div_read.setAttribute("id", "read_"+json.mid);
-			if (json.t_t != 'G') {
-				div_read.appendChild(document.createTextNode("Letto: no"));
+				div_msg = document.createElement("div");
+				div_msg.setAttribute("id", "msg_"+json.mid);
+				div_msg.setAttribute("display", "none");
+				div_msg.setAttribute("class", "message_detail my_msg");
+
+				div_h = document.createElement("div");
+				div_h.setAttribute("class", "msg_header");
+
+				div_send = document.createElement("div");
+				div_send.setAttribute("class", "msg_send");
+				div_send.appendChild(document.createTextNode(json.date));
+
+				div_read = document.createElement("div");
+				div_read.setAttribute("class", "msg_read");
+				div_read.setAttribute("id", "read_"+json.mid);
+				if (json.t_t != 'G') {
+					div_read.appendChild(document.createTextNode("Letto: no"));
+				}
+
+				div_txt = document.createElement("div");
+				div_txt.setAttribute("class", "msg_text");
+				div_txt.appendChild(document.createTextNode(json.text));
+
+				div_h.appendChild(div_send);
+				div_h.appendChild(div_read);
+
+				div_msg.appendChild(div_h);
+				div_msg.appendChild(div_txt);
+
+				$('#sel_thread').prepend(div_msg);
+
+				$('#sel_thread').show();
+				$('#message').hide();
+				$('#newmsg').show();
+				$('#viewlist').hide();
+
+				$('#msg_'+json.mid).show(1500);
 			}
+		});
+	};
 
-			div_txt = document.createElement("div");
-			div_txt.setAttribute("class", "msg_text");
-			div_txt.appendChild(document.createTextNode(json.text));
-
-			div_h.appendChild(div_send);
-			div_h.appendChild(div_read);
-
-			div_msg.appendChild(div_h);
-			div_msg.appendChild(div_txt);
-
-			$('#oth_user').after(div_msg);
-
-			$('#sel_thread').show();
-			$('#message').hide();
-			$('#newmsg').show();
-			$('#viewlist').hide();
-
-			$('#msg_'+json.mid).show(1500);
-		}
-	});
-};
-
-</script>
+	</script>
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>
@@ -195,7 +198,7 @@ var send_message = function(){
 </div>
 <div id="left_col">
 	<div id="navbar">
-		<div id="username">Messaggi di <?php echo $_SESSION['__user__']->getFullName() ?></div>
+		<div id="username"><?php echo $thread->getTargetName($uniqID) ?></div>
 		<div id="newmsg">
 			<a href="#" id="newmsg_lnk"><img src="theme/new_mail.png" style="" /></a>
 		</div>
@@ -203,8 +206,7 @@ var send_message = function(){
 			<a href="#" id="viewlist_lnk"><img src="theme/view-list-icon.png" style="width: 32px; height: 32px; margin-top: 4px" /></a>
 		</div>
 	</div>
-	<div id="sel_thread">
-		<div id="oth_user"><?php echo $thread->getTargetName($uniqID) ?></div>
+	<div id="sel_thread" style="margin-top: 25px">
 	<?php
 	if (count($thread->getMessages()) > 0) {
 		foreach ($thread->getMessages() as $k => $msg){
@@ -276,5 +278,21 @@ var send_message = function(){
 <p class="spacer"></p>
 </div>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/footer.php" ?>
+<div id="drawer" class="drawer" style="display: none; position: absolute">
+	<div style="width: 100%; height: 430px">
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/index.php"><img src="../../images/6.png" style="margin-right: 10px; position: relative; top: 5%" />Home</a></div>
+		<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>intranet/<?php echo $_SESSION['__mod_area__'] ?>/profile.php"><img src="../../images/33.png" style="margin-right: 10px; position: relative; top: 5%" />Profilo</a></div>
+		<?php if (!$_SESSION['__user__'] instanceof ParentBean) : ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/documents/load_module.php?module=docs&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/11.png" style="margin-right: 10px; position: relative; top: 5%" />Documenti</a></div>
+		<?php endif; ?>
+		<?php if(is_installed("com")){ ?>
+			<div class="drawer_link"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>modules/communication/load_module.php?module=com&area=<?php echo $_SESSION['__mod_area__'] ?>"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/57.png" style="margin-right: 10px; position: relative; top: 5%" />Comunicazioni</a></div>
+		<?php } ?>
+	</div>
+	<?php if (isset($_SESSION['__sudoer__'])): ?>
+		<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>admin/sudo_manager.php?action=back"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/14.png" style="margin-right: 10px; position: relative; top: 5%" />DeSuDo</a></div>
+	<?php endif; ?>
+	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
+</div>
 </body>
 </html>

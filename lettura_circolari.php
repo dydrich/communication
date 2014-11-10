@@ -5,8 +5,6 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM);
 
-$navigation_label = "lettura circolari";
-
 if (!isset($_REQUEST['offset'])) {
 	$offset = 0;
 }
@@ -55,5 +53,7 @@ $count_name = "count_read";
 $row_class = "manager_row";
 $row_class_menu = " manager_row_menu";
 $nav_params = "&idc=".$_REQUEST['idc'];
+
+$drawer_label = "Lettura circolare n. ".$circ['progressivo']." del ".format_date($circ['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, ".");
 
 include "lettura_circolari.html.php";

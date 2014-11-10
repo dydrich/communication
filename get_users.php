@@ -34,6 +34,6 @@ while ($us = $res_users->fetch_assoc()){
 }
 
 $json_users = json_encode($users);
-header("Content-type: text/plain");
+header("Content-type: application/json");
 echo $json_users;
 exit;

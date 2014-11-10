@@ -4,6 +4,7 @@ require_once "../../lib/start.php";
 
 check_session();
 
-$navigation_label = "welcome";
+$drawer_label = "Home page";
+$_SESSION['__path_to_root__'] = "../../";
 
 include "index.html.php";

@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 
-$navigation_label = "eventi";
+$drawer_label = "Dettaglio evento";
 
 // estrazione eventi per id_padre
 $sel_eventi_p = "SELECT id_evento, abstract FROM rb_com_eventi WHERE (data_evento > NOW() OR data_evento IS NULL) AND id_padre IS NULL ";
@@ -43,5 +43,3 @@ else{
 }
 
 include "event.html.php";
-
-?>

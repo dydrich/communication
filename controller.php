@@ -17,7 +17,7 @@ switch ($action){
 		$th = null;
 		$rb = RBUtilities::getInstance($db);
 		if ($_REQUEST['tid'] == 0){
-			$th = new Thread(0, new MySQLDataLoader($db), array($sender->getUniqID(), $target));
+			$th = new Thread(0, new MySQLDataLoader($db), date("Y-m-d H:i:s"), "", 'C', array($sender->getUniqID(), $target));
 			$th->save();
 			$_SESSION['threads'][$th->getTid()] = $th;
 		}
@@ -28,6 +28,7 @@ switch ($action){
 		$msg = new Message(0, $th->getTid(), $sender, $th->getTid(), new MySQLDataLoader($db), null);
 		$msg->setText($text);
 		$msg->send();
+		$msg->read();
 		$th->addMessage($msg);
 		$_SESSION['threads'][$th->getTid()] = $th;
 		krsort($_SESSION['threads']);

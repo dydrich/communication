@@ -5,7 +5,7 @@ require_once "../../lib/start.php";
 check_session();
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM);
 
-$navigation_label = "circolari";
+$drawer_label = "Elenco circolari";
 
 if (!isset($_REQUEST['offset'])) {
 	$offset = 0;
@@ -52,5 +52,3 @@ $row_class = "manager_row";
 $row_class_menu = " manager_row_menu";
 
 include 'vedi_circolari.html.php';
-
-?>
