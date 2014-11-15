@@ -3,11 +3,11 @@
 			$( "#dialog" ).dialog({
 				autoOpen: false,
 				show: {
-					effect: "slide",
+					effect: "fade",
 					duration: 1000
 				},
 				hide: {
-					effect: "slide",
+					effect: "fade",
 					duration: 1000
 				},
 				modal: true
