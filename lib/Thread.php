@@ -79,7 +79,6 @@ class Thread {
 				$this->lastAccesses[$row['utente']] = $row['last_access'];
 			}
 		}
-		print_r($this->users);
 	}
 
     public function getMessage($mid){
