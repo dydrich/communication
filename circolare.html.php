@@ -1,117 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
-<script type="text/javascript" src="../../js/page.js"></script>
-<script type="text/javascript">
-$(function(){
-	load_jalert();
-	setOverlayEvent();
-	$('#data').datepicker({
-		dateFormat: "dd/mm/yy"
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" />
+	<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
+	<script type="text/javascript" src="../../js/page.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		load_jalert();
+		setOverlayEvent();
+		$('#data').datepicker({
+			dateFormat: "dd/mm/yy"
+		});
 	});
-});
 
 
-var registra = function(){
-	$.ajax({
-		type: "POST",
-		url: "circ_manager.php",
-		data: $('#my_form').serialize(true),
-		dataType: 'json',
-		error: function(data, status, errore) {
-			alert("Si e' verificato un errore");
-			return false;
-		},
-		succes: function(result) {
-			alert("ok");
-		},
-		complete: function(data, status){
-			r = data.responseText;
-			var json = $.parseJSON(r);
-			if(json.status == "kosql"){
-				alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-				return;
-      		}
-			else {
-				$('#not1').text(json.message);
-				$('#not1').show(1000);
-			}
-		}
-	});
-};
-
-
-var del_file = function(){
-	if($('#server_file').val() == ""){
-		alert("Non hai ancora fatto l'upload di nessun file");
-		return false;
-	}
-	//var url = "../../admin/adm_docs/document_manager.php";
-	var url = "../../modules/documents/document_manager.php";
-
-	$.ajax({
-		type: "POST",
-		url: url,
-		data: {server_file: $('#server_file').val(), action: "4", tipo: "files", doc_type: "document"},
-		dataType: 'json',
-		error: function() {
-			show_error("Errore di trasmissione dei dati");
-		},
-		succes: function() {
-			
-		},
-		complete: function(data){
-			r = data.responseText;
-			if(r == "null"){
+	var registra = function(){
+		$.ajax({
+			type: "POST",
+			url: "circ_manager.php",
+			data: $('#my_form').serialize(true),
+			dataType: 'json',
+			error: function(data, status, errore) {
+				alert("Si e' verificato un errore");
 				return false;
+			},
+			succes: function(result) {
+				alert("ok");
+			},
+			complete: function(data, status){
+				r = data.responseText;
+				var json = $.parseJSON(r);
+				if(json.status == "kosql"){
+					alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+					return;
+	            }
+				else {
+					$('#not1').text(json.message);
+					$('#not1').show(1000);
+				}
 			}
-			var json = $.parseJSON(r);
-			if (json.status == "kosql"){
-				show_error(json.message);
-				console.log(json.dbg_message);
-			}
-			else {
-				$('#not1').text("File cancellato");
-				$('#not1').show(1000);
-				$('#not1').hide(1000);
-				$('#aframe').attr('src', '../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=files');
-				$('#server_file').val("");
-			}
+		});
+	};
+
+
+	var del_file = function(){
+		if($('#server_file').val() == ""){
+			alert("Non hai ancora fatto l'upload di nessun file");
+			return false;
 		}
-    });
-};
+		//var url = "../../admin/adm_docs/document_manager.php";
+		var url = "../../modules/documents/document_manager.php";
 
-var loading = function(vara){
-	$('#not1').text("Attendere il caricamento del file");
-	$('#not1').show(500);
-};
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: {server_file: $('#server_file').val(), action: "4", tipo: "files", doc_type: "document"},
+			dataType: 'json',
+			error: function() {
+				show_error("Errore di trasmissione dei dati");
+			},
+			succes: function() {
 
-var loaded = function(r){
-	//var json = $.parseJSON(r);
-	$('#not1').text("Caricamento completato");
-	$('#del_upl').show();
-	$('#not1').hide(1500);
-	$('#server_file').val(r);
-};
+			},
+			complete: function(data){
+				r = data.responseText;
+				if(r == "null"){
+					return false;
+				}
+				var json = $.parseJSON(r);
+				if (json.status == "kosql"){
+					show_error(json.message);
+					console.log(json.dbg_message);
+				}
+				else {
+					$('#not1').text("File cancellato");
+					$('#not1').show(1000);
+					$('#not1').hide(1000);
+					$('#aframe').attr('src', '../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=files');
+					$('#server_file').val("");
+				}
+			}
+	    });
+	};
 
-var show_error = function(text){
-	//$('#iframe').show();
-	$('#not1').text(text);
-	$('#not1').addClass("error");
-	$('#not1').show(1000);
-};
+	var loading = function(vara){
+		$('#not1').text("Attendere il caricamento del file");
+		$('#not1').show(500);
+	};
+
+	var loaded = function(r){
+		//var json = $.parseJSON(r);
+		$('#not1').text("Caricamento completato");
+		$('#del_upl').show();
+		$('#not1').hide(1500);
+		$('#server_file').val(r);
+	};
+
+	var show_error = function(text){
+		//$('#iframe').show();
+		$('#not1').text(text);
+		$('#not1').addClass("error");
+		$('#not1').show(1000);
+	};
 
 
-</script>
+	</script>
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>

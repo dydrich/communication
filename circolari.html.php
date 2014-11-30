@@ -3,6 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
 <link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
@@ -103,7 +104,12 @@ $(function(){
 	<?php include "menu.php" ?>
 	</div>
 	<div id="left_col">
-		<div class="card_container">
+		<div style="top: 75px; margin-left: 625px; margin-bottom: 10px; position: absolute" class="rb_button">
+			<a href="circolare.php?idc=0">
+				<img src="../../images/39.png" style="padding: 12px 0 0 12px" />
+			</a>
+		</div>
+		<div class="card_container" style="margin-top: 15px">
  	    <?php 
  	    if($result->num_rows < 1){
  	    ?>
