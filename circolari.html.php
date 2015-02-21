@@ -63,11 +63,6 @@ var show_menu = function(id) {
 $(function(){
 	load_jalert();
 	setOverlayEvent();
-	$('a.del_link').click(function(event){
-		event.preventDefault();
-		var strs = $(this).parent().attr("id").split("_");
-		del_circ(strs[1]);
-	});
 	$('a.showmenu').click(function(event){
 		event.preventDefault();
 		var strs = $(this).parent().attr("id").split("_");
@@ -79,7 +74,7 @@ $(function(){
 	});
 	$('#del_link').click(function(event){
 		event.preventDefault();
-		document.location.href = "circ_manager.php?action=2&_id="+circ;
+		del_circ(circ);
 	});
 	$('#ver_link').click(function(event){
 		event.preventDefault();
