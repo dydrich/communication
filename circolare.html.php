@@ -45,6 +45,17 @@
 				else {
 					$('#not1').text(json.message);
 					$('#not1').show(1000);
+					setTimeout(function(){
+						$('#not1').hide(1000);
+						setTimeout(function(){
+							if ($('#idc').val() == 0) {
+								document.location.href = "circolare.php?idc=0";
+							}
+							else {
+								document.location.href = "circolari.php";
+							}
+						}, 1000);
+					}, 2000);
 				}
 			}
 		});
