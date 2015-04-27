@@ -21,18 +21,21 @@ $res_read = $db->execute($sel_read);
 $_rd = $res_read->fetch_assoc();
 $unread_count -= $_rd['count'];
 $_SESSION['__unread_count__'] = $unread_count;
-
+if ($unread_count > 0) {
+	?>
+	<div class="welcome">
+		<p id="w_head">Circolari</p>
+		<p class="w_text">
+			<?php print $_SESSION['__circular_msg__'] ?>.<br/>
+			<?php
+			if ($_SESSION['__unread_count__'] > 0): ?>
+				<a href="<?php echo $_SESSION['__path_to_root__'] ?>modules/communication/load_module.php?module=com&area=teachers&page=vedi_circolari">Sono
+					presenti <span id="num_circ"><?php print $_SESSION['__unread_count__'] ?></span> circolari non lette.</a>
+			<?php else: ?>
+				Sono presenti <span id="num_circ"><?php print $_SESSION['__unread_count__'] ?></span> circolari non lette.
+			<?php endif; ?>
+		</p>
+	</div>
+<?php
+}
 ?>
-		<div class="welcome">
-			<p id="w_head">Circolari</p>
-			<p class="w_text">
-			<?php print $_SESSION['__circular_msg__'] ?>.<br />
-<?php 
-if ($_SESSION['__unread_count__'] > 0):
-?>
-			<a href="<?php echo $_SESSION['__path_to_root__'] ?>modules/communication/load_module.php?module=com&area=teachers&page=vedi_circolari">Sono presenti <span id="num_circ"><?php print $_SESSION['__unread_count__'] ?></span> circolari non lette.</a>
-<?php else: ?>
-			Sono presenti <span id="num_circ"><?php print $_SESSION['__unread_count__'] ?></span> circolari non lette.
-<?php endif; ?>
-			</p>
-		</div>
