@@ -5,15 +5,25 @@
 		<li><a href="files.php" style="text-decoration: none">File privati</a></li>
 		<!--<li><a href="groups.php" style="text-decoration: none">Gruppi</a></li> -->
 	</ul>
-	<?php if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM) == true): ?>
+	<?php if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM) == true) { ?>
 	<p class="menu_label schedule_icon">Eventi e news</p>
 	<ul class="menublock" style="" dir="rtl">
 		<li><a href="events.php" style="text-decoration: none">Eventi</a></li>
 		<li><a href="news_list.php" style="text-decoration: none">News</a></li>
 		<li><a href="notices.php" style="text-decoration: none">Avvisi</a></li>
 	</ul>
-	<?php endif; ?>
-	<?php if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM) == true): ?>
+	<?php
+	}
+	else {
+	?>
+	<p class="menu_label schedule_icon">Eventi e news</p>
+	<ul class="menublock" style="" dir="rtl">
+		<li><a href="archived_events.php" style="text-decoration: none">Eventi</a></li>
+		<li><a href="archived_news.php" style="text-decoration: none">Archivio news</a></li>
+	</ul>
+	<?php
+	}
+	if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM) == true): ?>
 	<p class="menu_label data_icon">Circolari</p>
 	<ul class="menublock" style="" dir="rtl">
 	<?php if($_SESSION['__user__']->check_perms(DOC_PERM) == true): ?>
