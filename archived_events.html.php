@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: eventi</title>
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: archivio eventi</title>
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -15,11 +15,6 @@
 		$(function(){
 			load_jalert();
 			setOverlayEvent();
-			$('a.del_link').click(function(event){
-				event.preventDefault();
-				var strs = $(this).parent().attr("id").split("_");
-				del_evs(strs[1]);
-			});
 		});
 	</script>
 </head>
@@ -48,9 +43,9 @@
 				if ($count_sons < 1) {
 					?>
 					<div class="card <?php if ($event['data_evento'] < date("Y-m-d")) echo "no_permission _normal"  ?>" id="row_<?php echo $event['id_evento'] ?>">
-						<div class="card_title">
+						<div class="card_title card_nocontent">
 							<span class="<?php if ($event['data_evento'] < date("Y-m-d")) echo "_normal"  ?>"><?php echo utf8_decode($event['abstract']) ?></span>
-							<div style="width: 300px; text-align: left" class="fright _normal normal">
+							<div style="width: 200px; text-align: left" class="fright _normal normal">
 								<?php if ($count_sons < 1) echo ucfirst($date_string) . " ore " . $ora . ""; else echo("---") ?>
 							</div>
 						</div>

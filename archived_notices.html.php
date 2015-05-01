@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: archivio news</title>
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: archivio avvisi</title>
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -28,33 +28,25 @@
 	<div id="left_col">
 		<div class="card_container" style="margin-top: 20px">
 			<?php
-			$x = 0;
-			// news in home
-			$news_to_skip = 4;
-			while($news = $res_news->fetch_assoc()){
-				if($x < $news_to_skip) {
-					$x++;
-					continue;
-				}
-				list($data, $ora) = explode(" ", $news['ora']);
+			while($notice = $res_notices->fetch_assoc()){
+				list($data, $ora) = explode(" ", $notice['data_inserimento']);
 				setlocale(LC_TIME, "it_IT.utf8");
 				$date_string = strftime("%A %d %B", strtotime($data)).' alle ore '.$ora;
 				?>
-				<div class="card" id="row_<?php echo $news['id_news'] ?>">
+				<div class="card">
 					<div class="card_title">
-						<?php print utf8_decode(truncateString($news['abstract'], 72)) ?>
+						<span class="_normal">Scaduto il <?php echo format_date($notice['data_scadenza'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></span>
 					</div>
 					<div class="cardcontent">
 						<p>
-							<?php echo utf8_decode($news['testo']) ?>
+							<?php echo $notice['testo'] ?>
 						</p>
 						<p style="margin-top: 5px; border-top: 1px solid #CCCCCC; font-style: italic">
-							Pubblicata <?php echo $date_string ?>
+							Pubblicato <?php echo $date_string ?>
 						</p>
 					</div>
 				</div>
 				<?php
-				$x++;
 			}
 			?>
 		</div>

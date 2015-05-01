@@ -20,6 +20,7 @@
 	<ul class="menublock" style="" dir="rtl">
 		<li><a href="archived_events.php" style="text-decoration: none">Eventi</a></li>
 		<li><a href="archived_news.php" style="text-decoration: none">Archivio news</a></li>
+		<li><a href="archived_notices.php" style="text-decoration: none">Archivio avvisi</a></li>
 	</ul>
 	<?php
 	}
