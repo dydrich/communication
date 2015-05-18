@@ -11,7 +11,7 @@ if($_SESSION['__user__']->getPerms()&DOC_PERM) {
 		$teach_params = "AND (classe IN ($in) OR classe IS NULL)";
 	}
 }
-$max_events = 3;
+$max_events = 9;
 
 $q_ord = "";
 if ($_SESSION['__user__']->getSchoolOrder() != ""){
@@ -29,6 +29,12 @@ if($res_impegni->num_rows > 0){
 <?php
 while($impegno = $res_impegni->fetch_assoc()){
 	list($data, $ora) = explode(" ", $impegno['data_evento']);
+	$curr_date = new DateTime($data);
+	$max_date = new DateTime(date("Y-m-d"));
+	$max_date = $max_date->add(new DateInterval('P7D'));
+	if ($curr_date->format("Y-m-d") > $max_date->format("Y-m-d")) {
+		continue;
+	}
 	if ($impegno['id_padre'] != ""){
 		$sel_text = "SELECT testo FROM rb_com_eventi WHERE id_evento = {$impegno['id_padre']}";
 		$testo = $db->executeCount($sel_text);
