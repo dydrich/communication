@@ -27,12 +27,14 @@ if($res_impegni->num_rows > 0){
 <div class="welcome">
 <p id="w_head">Prossimi impegni</p>
 <?php
+$shown_events = 0;
 while($impegno = $res_impegni->fetch_assoc()){
+	$shown_events++;
 	list($data, $ora) = explode(" ", $impegno['data_evento']);
 	$curr_date = new DateTime($data);
 	$max_date = new DateTime(date("Y-m-d"));
 	$max_date = $max_date->add(new DateInterval('P7D'));
-	if ($curr_date->format("Y-m-d") > $max_date->format("Y-m-d")) {
+	if ($curr_date->format("Y-m-d") > $max_date->format("Y-m-d") && $shown_events > $max_events) {
 		continue;
 	}
 	if ($impegno['id_padre'] != ""){
@@ -46,7 +48,7 @@ while($impegno = $res_impegni->fetch_assoc()){
 <p class="w_text" style="margin: 0">
 <a href="#" onclick="$('#testo_<?php echo $impegno['id_evento'] ?>').toggle(1000)" class="no_decoration">
 <strong><?php if($impegno['red_style'] == "yes") print "<span class='attention'>" ?><?php print format_date($data, SQL_DATE_STYLE, IT_DATE_STYLE, "/")." ".substr($ora, 0, 5) ?><?php if($impegno['red_style'] == "yes") print "</span>" ?></strong><br />
-<?php print $impegno['abstract'] ?>
+<?php print utf8_decode($impegno['abstract']) ?>
 </a>
 </p>
 <p id="testo_<?php echo $impegno['id_evento'] ?>" class="evento" style="display: none"><?php echo nl2br($testo) ?></p>
