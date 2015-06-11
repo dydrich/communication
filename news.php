@@ -9,7 +9,7 @@ $drawer_label = "Dettaglio news";
 
 $action = 1;
 $idnews = 0;
-if($_REQUEST['idn'] != 0){
+if(isset($_REQUEST['idn']) && $_REQUEST['idn'] != 0){
 	$action = 3;
 	$sel_news = "SELECT * FROM rb_com_news WHERE id_news = ".$_REQUEST['idn'];
 	try{

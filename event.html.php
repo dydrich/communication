@@ -1,72 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: evento</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: evento</title>
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-timepicker-addon.js"></script>
-<script type="text/javascript" src="../../js/page.js"></script>
-<script type="text/javascript">
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-timepicker-addon.js"></script>
+	<script type="text/javascript" src="../../js/page.js"></script>
+	<script type="text/javascript">
 
-$(function(){
-	load_jalert();
-	setOverlayEvent();
-	$('#sel3').datetimepicker({
-		dateFormat: "dd/mm/yy",
-		altField: "#time",
-		altFieldTimeOnly: true,
-		altTimeFormat: "HH:mm",
-		currentText: "Ora",
-		closeText: "Chiudi"
-	});
+		$(function(){
+			load_jalert();
+			setOverlayEvent();
+			$('#sel3').datetimepicker({
+				dateFormat: "dd/mm/yy",
+				altField: "#time",
+				altFieldTimeOnly: true,
+				altTimeFormat: "HH:mm",
+				currentText: "Ora",
+				closeText: "Chiudi"
+			});
 
-	$('#time').timepicker({
-		currentText: "Ora",
-		closeText: "Chiudi"
-	});
-});
+			$('#time').timepicker({
+				currentText: "Ora",
+				closeText: "Chiudi"
+			});
+		});
 
 
-var registra = function(){
-	if(trim(document.forms[0].titolo.value) == ""){
-		alert("Il titolo e` obbligatorio.");
-		return false;
-	}
-	
-	$.ajax({
-		type: "POST",
-		url: "events_manager.php",
-		data: $('#my_form').serialize(),
-		dataType: 'json',
-		error: function(data, status, errore) {
-			alert("Si e' verificato un errore");
-			return false;
-		},
-		succes: function(result) {
-			alert("ok");
-		},
-		complete: function(data, status){
-			r = data.responseText;
-			var json = $.parseJSON(r);
-			if(json.status == "kosql"){
-				alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-				return;
-      		}
-			else {
-				$('#not1').text(json.message);
-				$('#not1').show(1000);
-				window.setTimeout("$('#not1').hide(1000)", 2000);
+		var registra = function(){
+			if(trim(document.forms[0].titolo.value) == ""){
+				alert("Il titolo e` obbligatorio.");
+				return false;
 			}
-		}
-	});
-}
 
-</script>
+			$.ajax({
+				type: "POST",
+				url: "events_manager.php",
+				data: $('#my_form').serialize(),
+				dataType: 'json',
+				error: function(data, status, errore) {
+					alert("Si e' verificato un errore");
+					return false;
+				},
+				succes: function(result) {
+					alert("ok");
+				},
+				complete: function(data, status){
+					r = data.responseText;
+					var json = $.parseJSON(r);
+					if(json.status == "kosql"){
+						alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+						return;
+		            }
+					else {
+						$('#not1').text(json.message);
+						$('#not1').show(1000);
+						window.setTimeout("$('#not1').hide(1000)", 2000);
+					}
+				}
+			});
+		}
+
+	</script>
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>
@@ -77,6 +77,11 @@ var registra = function(){
 </div>
 <div id="left_col">
 	<div id="not1" class="notification"></div>
+	<div style="top: -10px; margin-left: 35px; margin-bottom: -10px" class="rb_button">
+		<a href="events.php?second=1&offset=<?php echo $_REQUEST['offset']; ?>">
+			<img src="../../images/47bis.png" style="padding: 12px 0 0 12px" />
+		</a>
+	</div>
  	<form id="my_form" method="post" action="events_manager.php" style="border: 1px solid #666666; border-radius: 10px; margin-top: 20px; text-align: left; width: 80%; margin-left: auto; margin-right: auto">
 	<table style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 30px; margin-bottom: 20px">
 		<tr>
@@ -93,7 +98,7 @@ var registra = function(){
                 <?php
 				while($ev_p = $res_eventi_p->fetch_assoc()){
                 ?>
-                	<option <?php if($ev_p['id_evento'] == $evs['id_padre']) print("selected='selected'") ?> value="<?php print $ev_p['id_evento'] ?>"><?php print $ev_p['abstract'] ?></option>
+                	<option <?php if(isset($evs) && $ev_p['id_evento'] == $evs['id_padre']) print("selected='selected'") ?> value="<?php print $ev_p['id_evento'] ?>"><?php print $ev_p['abstract'] ?></option>
                 <?php 
 				} 
 				?>
