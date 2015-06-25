@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: eventi</title>
+	<link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -12,47 +13,45 @@
 	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
 	<script type="text/javascript" src="../../js/page.js"></script>
 	<script type="text/javascript">
-	function del_evs(id){
-		if(!confirm("Sei sicuro di voler cancellare questo evento?"))
-	        return false;
+		var del_evs = function(id){
+			if(!confirm("Sei sicuro di voler cancellare questo evento?"))
+		        return false;
 
-		$.ajax({
-			type: "POST",
-			url: "events_manager.php",
-			data: {action: 2, _i: id},
-			dataType: 'json',
-			error: function(data, status, errore) {
-				alert("Si e' verificato un errore");
-				return false;
-			},
-			succes: function(result) {
-				alert("ok");
-			},
-			complete: function(data, status){
-				r = data.responseText;
-				var json = $.parseJSON(r);
-				if(json.status == "kosql"){
-					alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-					return;
-	            }
-				else {
-					$('#not1').text(json.message);
-					$('#not1').show(1000);
-					$('#row_'+id).hide();
+			$.ajax({
+				type: "POST",
+				url: "events_manager.php",
+				data: {action: 2, _i: id},
+				dataType: 'json',
+				error: function(data, status, errore) {
+					j_alert("error", "Si è verificato un errore di rete");
+					return false;
+				},
+				succes: function(result) {
+
+				},
+				complete: function(data, status){
+					r = data.responseText;
+					var json = $.parseJSON(r);
+					if(json.status == "kosql"){
+						j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+		            }
+					else {
+						j_alert("alert", json.message);
+						$('#row_'+id).detach();
+					}
 				}
-			}
-		});
-	}
+			});
+		};
 
-	$(function(){
-		load_jalert();
-		setOverlayEvent();
-		$('a.del_link').click(function(event){
-			event.preventDefault();
-			var strs = $(this).parent().attr("id").split("_");
-			del_evs(strs[1]);
+		$(function(){
+			load_jalert();
+			setOverlayEvent();
+			$('a.del_link').click(function(event){
+				event.preventDefault();
+				var strs = $(this).parent().attr("id").split("_");
+				del_evs(strs[1]);
+			});
 		});
-	});
 	</script>
 </head>
 <body>

@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: evento</title>
+	<link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -14,11 +15,11 @@
 	<script type="text/javascript">
 	function registra(){
 		if(trim(document.forms[0].titolo.value) == ""){
-			alert("Il titolo e` obbligatorio.");
+			j_alert("error", "Il titolo è obbligatorio.");
 			return false;
 		}
 		else if(trim(document.forms[0].testo.value) == ""){
-			alert("Il testo e` obbligatorio");
+			j_alert("error", "Il testo è obbligatorio");
 			return false;
 		}
 
@@ -28,22 +29,20 @@
 			data: $('#my_form').serialize(true),
 			dataType: 'json',
 			error: function(data, status, errore) {
-				alert("Si e' verificato un errore");
+				j_alert("error", "Si è verificato un errore di rete");
 				return false;
 			},
 			succes: function(result) {
-				alert("ok");
+
 			},
 			complete: function(data, status){
 				r = data.responseText;
 				var json = $.parseJSON(r);
 				if(json.status == "kosql"){
-					alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-					return;
+					j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
 	            }
 				else {
-					$('#not1').text(json.message);
-					$('#not1').show(1000);
+					j_alert("alert", json.message);
 				}
 			}
 		});

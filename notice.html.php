@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: avviso del DS</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: avviso del DS</title>
+	<link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-timepicker-addon.js"></script>
-<script type="text/javascript" src="../../js/page.js"></script>
-<script type="text/javascript">
-$(function(){
-	load_jalert();
-	setOverlayEvent();
-	$('#data').datepicker({
-		dateFormat: "dd/mm/yy",
-		currentText: "Oggi",
-		closeText: "Chiudi"
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" />
+	<script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-timepicker-addon.js"></script>
+	<script type="text/javascript" src="../../js/page.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		load_jalert();
+		setOverlayEvent();
+		$('#data').datepicker({
+			dateFormat: "dd/mm/yy",
+			currentText: "Oggi",
+			closeText: "Chiudi"
+		});
 	});
-});
 
-function registra(){
-	if(trim(document.forms[0].data.value) == ""){
-		alert("La data di scadeza e` obbligatoria.");
-		return false;
-	}
-	else if(trim(document.forms[0].testo.value) == ""){
-		alert("Il testo e` obbligatorio");
-		return false;
-	}
-
-	$.ajax({
-		type: "POST",
-		url: "notice_manager.php",
-		data: $('#my_form').serialize(true),
-		dataType: 'json',
-		error: function(data, status, errore) {
-			alert("Si e' verificato un errore");
+	function registra(){
+		if(trim(document.forms[0].data.value) == ""){
+			j_alert("error", "La data di scadeza è obbligatoria.");
 			return false;
-		},
-		succes: function(result) {
-			alert("ok");
-		},
-		complete: function(data, status){
-			r = data.responseText;
-			var json = $.parseJSON(r);
-			if(json.status == "kosql"){
-				alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-				return;
-      		}
-			else {
-				$('#not1').text(json.message);
-				$('#not1').show(1000);
-			}
 		}
-	});
-}
-</script>
+		else if(trim(document.forms[0].testo.value) == ""){
+			j_alert("error", "Il testo è obbligatorio");
+			return false;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: "notice_manager.php",
+			data: $('#my_form').serialize(true),
+			dataType: 'json',
+			error: function(data, status, errore) {
+				j_alert("error", "Si è verificato un errore di rete");
+				return false;
+			},
+			succes: function(result) {
+
+			},
+			complete: function(data, status){
+				r = data.responseText;
+				var json = $.parseJSON(r);
+				if(json.status == "kosql"){
+					j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+	            }
+				else {
+					j_alert("alert", json.message);
+				}
+			}
+		});
+	}
+	</script>
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>

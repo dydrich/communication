@@ -47,10 +47,12 @@ try{
 	/*
 	 * gestione flag has_sons nell'evento padre
 	*/
-	if($id_padre != ""){
-		if($_POST['action'] == 1 || $_POST['action'] == 3){
-			$upd = "UPDATE rb_com_eventi SET has_sons = 1 WHERE id_evento = ".$id_padre;
-			$r_upd = $db->executeUpdate($upd);
+	if ($_REQUEST['action'] != 2) {
+		if ($id_padre != "") {
+			if ($_POST['action'] == 1 || $_POST['action'] == 3) {
+				$upd = "UPDATE rb_com_eventi SET has_sons = 1 WHERE id_evento = " . $id_padre;
+				$r_upd = $db->executeUpdate($upd);
+			}
 		}
 	}
 } catch (MySQLException $ex){

@@ -1,95 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
+	<link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
-<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
-<script type="text/javascript" src="../../js/page.js"></script>
-<script type="text/javascript">
-	var circ = 0;
-function del_circ(id){
-	$('#hid').hide();
-	if(!confirm("Sei sicuro di voler cancellare questa circolare?"))
-        return false;
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/communication.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
+	<script type="text/javascript" src="../../js/page.js"></script>
+	<script type="text/javascript">
+		var circ = 0;
+		var del_circ = function(id){
+			$('#hid').hide();
+			if(!confirm("Sei sicuro di voler cancellare questa circolare?"))
+		        return false;
 
-	$.ajax({
-		type: "POST",
-		url: "circ_manager.php",
-		data: {action: 'delete', idc: id},
-		dataType: 'json',
-		error: function(data, status, errore) {
-			alert("Si e' verificato un errore");
-			return false;
-		},
-		succes: function(result) {
-			alert("ok");
-		},
-		complete: function(data, status){
-			r = data.responseText;
-			var json = $.parseJSON(r);
-			if(json.status == "kosql"){
-				alert("Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-				return;
-      		}
-			else {
-				$('#not1').text(json.message);
-				$('#not1').show(1000);
-				$('#row_'+id).hide();
+			$.ajax({
+				type: "POST",
+				url: "circ_manager.php",
+				data: {action: 'delete', idc: id},
+				dataType: 'json',
+				error: function(data, status, errore) {
+					j_alert("error", "Si è verificato un errore di rete");
+					return false;
+				},
+				succes: function(result) {
+
+				},
+				complete: function(data, status){
+					r = data.responseText;
+					var json = $.parseJSON(r);
+					if(json.status == "kosql"){
+						j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+		            }
+					else {
+						j_alert("alert", json.message);
+						$('#row_'+id).hide();
+					}
+				}
+			});
+		};
+
+		var show_menu = function(id) {
+			if ($('#hid').is(":visible")) {
+				$('#hid').slideUp(500);
+				return false;
 			}
-		}
-	});
-}
+			circ = id;
+			var offset = $('#menu_'+id).offset();
+			var top = offset.top + 18;
+			var left = offset.left - $('#hid').width() + ($('#menu_'+id).width() / 2) - 5;
+			$('#hid').css({top: top+"px", left: left+"px"});
+			$('#classname').text($('#ren_'+id).text());
+			$('#hid').slideDown();
+		};
 
-var show_menu = function(id) {
-	if ($('#hid').is(":visible")) {
-		$('#hid').slideUp(500);
-		return false;
-	}
-	circ = id;
-	var offset = $('#menu_'+id).offset();
-	var top = offset.top + 18;
-	var left = offset.left - $('#hid').width() + ($('#menu_'+id).width() / 2) - 5;
-	$('#hid').css({top: top+"px", left: left+"px"});
-	$('#classname').text($('#ren_'+id).text());
-	$('#hid').slideDown();
-};
-
-$(function(){
-	load_jalert();
-	setOverlayEvent();
-	$('a.showmenu').click(function(event){
-		event.preventDefault();
-		var strs = $(this).parent().attr("id").split("_");
-		show_menu(strs[1]);
-	});
-	$('#mod_link').click(function(event){
-		event.preventDefault();
-		document.location.href = "circolare.php?idc="+circ;
-	});
-	$('#del_link').click(function(event){
-		event.preventDefault();
-		del_circ(circ);
-	});
-	$('#ver_link').click(function(event){
-		event.preventDefault();
-		document.location.href = "lettura_circolari.php?idc="+circ;
-	});
-});
-</script>
-<style type="text/css">
-.ov_red {
-	font-weight: bold
-}
-.ov_red:hover{
-	color: #8a1818;
-}
-</style>
+		$(function(){
+			load_jalert();
+			setOverlayEvent();
+			$('a.showmenu').click(function(event){
+				event.preventDefault();
+				var strs = $(this).parent().attr("id").split("_");
+				show_menu(strs[1]);
+			});
+			$('#mod_link').click(function(event){
+				event.preventDefault();
+				document.location.href = "circolare.php?idc="+circ;
+			});
+			$('#del_link').click(function(event){
+				event.preventDefault();
+				del_circ(circ);
+			});
+			$('#ver_link').click(function(event){
+				event.preventDefault();
+				document.location.href = "lettura_circolari.php?idc="+circ;
+			});
+		});
+	</script>
 </head>
 <body>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/header.php" ?>
