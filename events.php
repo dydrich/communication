@@ -7,7 +7,7 @@ check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 
 $limit = 10;
 $offset = 0;
-if (isset($_GET['offset'])){
+if (isset($_GET['offset']) && $_GET['offset'] != ""){
 	$offset = $_GET['offset'];
 }
 

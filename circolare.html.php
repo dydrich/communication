@@ -101,7 +101,7 @@
 		};
 
 		var loading_done = function(r){
-			loaded("Caricamento competato");
+			loaded("Caricamento completato");
 			$('#del_upl').show();
 			$('#server_file').val(r);
 		};

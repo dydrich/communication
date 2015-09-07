@@ -96,7 +96,7 @@
             <div class="card" id="row_<?php echo $event['id_evento'] ?>">
 	            <div class="card_title">
 		            <a href="event.php?id=<?php echo $event['id_evento'] ?>&offset=<?php echo $offset ?>" class="mod_link">
-			            <?php echo utf8_decode($event['abstract']) ?>
+			            <?php echo truncateString(utf8_decode($event['abstract']), 80) ?>
 		            </a>
 		            <div style="float: right; margin-right: 20px" id="del_<?php echo $event['id_evento'] ?>">
 			            <a href="events_manager.php?action=2&_id=<?php echo $event['id_evento'] ?>" class="del_link">
