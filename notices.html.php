@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: avvisi del DS</title>
+    <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -52,6 +53,27 @@
 			var strs = $(this).parent().attr("id").split("_");
 			del_news(strs[1]);
 		});
+
+        $('#top_btn').click(function() {
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+            return false;
+        });
+
+        var amountScrolled = 200;
+
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > amountScrolled) {
+                $('#plus_btn').fadeOut('slow');
+                $('#float_btn').fadeIn('slow');
+                $('#top_btn').fadeIn('slow');
+            } else {
+                $('#float_btn').fadeOut('slow');
+                $('#plus_btn').fadeIn();
+                $('#top_btn').fadeOut('slow');
+            }
+        });
 	});
 	</script>
 </head>
@@ -71,14 +93,7 @@
 	</div>
 	<div class="card_container" style="margin-top: 20px">
     <?php
-    $x = 1;
-    if($res_notices->num_rows > $limit)
-        $max = $limit;
-    else
-        $max = $res_notices->num_rows;
     while($notice = $res_notices->fetch_assoc()){
-        if($x > $limit) break;
-
 	    $today = date("Y-m-d");
 	    setlocale(LC_TIME, "it_IT.utf8");
 	    $date_string = strftime("%A %d %B %Y", strtotime($notice['data_scadenza']));
@@ -110,10 +125,7 @@
 		    </div>
 	    </div>
         <?php
-            $x++;
         }
-        $expand = false;
-        include "../../shared/navigate.php";
         ?>
 		</div>
 	</div>
@@ -136,5 +148,11 @@
 	<?php endif; ?>
 	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
 </div>
+<a href="notice.php?idn=0" id="float_btn" class="rb_button float_button">
+    <i class="fa fa-pencil"></i>
+</a>
+<a href="#" id="top_btn" class="rb_button float_button top_button">
+    <i class="fa fa-arrow-up"></i>
+</a>
 </body>
 </html>

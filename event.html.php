@@ -76,7 +76,7 @@
 <div id="left_col">
 	<div id="not1" class="notification"></div>
 	<div style="top: -10px; margin-left: 35px; margin-bottom: -10px" class="rb_button">
-		<a href="events.php?second=1&offset=<?php echo $_REQUEST['offset']; ?>">
+		<a href="events.php">
 			<img src="../../images/47bis.png" style="padding: 12px 0 0 12px" />
 		</a>
 	</div>

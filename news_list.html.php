@@ -51,6 +51,26 @@
 				var strs = $(this).parent().attr("id").split("_");
 				del_news(strs[1]);
 			});
+            $('#top_btn').click(function() {
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 700);
+                return false;
+            });
+
+            var amountScrolled = 200;
+
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > amountScrolled) {
+                    $('#plus_btn').fadeOut('slow');
+                    $('#float_btn').fadeIn('slow');
+                    $('#top_btn').fadeIn('slow');
+                } else {
+                    $('#float_btn').fadeOut('slow');
+                    $('#plus_btn').fadeIn();
+                    $('#top_btn').fadeOut('slow');
+                }
+            });
 		});
 	</script>
 </head>
@@ -70,13 +90,7 @@
 	</div>
 	<div class="card_container" style="margin-top: 20px">
     <?php
-    $x = 1;
-    if($res_news->num_rows > $limit)
-        $max = $limit;
-    else
-        $max = $res_news->num_rows;
     while($news = $res_news->fetch_assoc()){
-        if($x > $limit) break;
         list($data, $ora) = explode(" ", $news['ora']);
 	    setlocale(LC_TIME, "it_IT.utf8");
 	    $date_string = strftime("%A %d %B", strtotime($data));
@@ -99,14 +113,11 @@
 		    </div>
 	    </div>
         <?php
-            $x++;
         }
         ?>
         </tbody>
         <tfoot>
         <?php
-        $expand = false;
-        include "../../shared/navigate.php";
         ?>
 		</div>
 	</div>
@@ -129,5 +140,11 @@
 	<?php endif; ?>
 	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
 </div>
+<a href="news.php?id=0" id="float_btn" class="rb_button float_button">
+    <i class="fa fa-pencil"></i>
+</a>
+<a href="#" id="top_btn" class="rb_button float_button top_button">
+    <i class="fa fa-arrow-up"></i>
+</a>
 </body>
 </html>

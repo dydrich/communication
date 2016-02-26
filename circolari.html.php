@@ -79,6 +79,26 @@
 				event.preventDefault();
 				document.location.href = "lettura_circolari.php?idc="+circ;
 			});
+            $('#top_btn').click(function() {
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 700);
+                return false;
+            });
+
+            var amountScrolled = 200;
+
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > amountScrolled) {
+                    $('#plus_btn').fadeOut('slow');
+                    $('#float_btn').fadeIn('slow');
+                    $('#top_btn').fadeIn('slow');
+                } else {
+                    $('#float_btn').fadeOut('slow');
+                    $('#plus_btn').fadeIn();
+                    $('#top_btn').fadeOut('slow');
+                }
+            });
 		});
 	</script>
 </head>
@@ -104,14 +124,7 @@
  	    <?php 
  	    }
  	    else{
- 	    	$x = 1;
- 	    	if($result->num_rows > $limit)
- 	    		$max = $limit;
- 	    	else
- 	    		$max = $result->num_rows;
- 	    	$row = 0;
 			while ($circolare = $result->fetch_assoc()){
-				if($x > $limit) break;
  	    ?>
 			<div class="card" id="row_<?php echo $circolare['id_circolare'] ?>">
 				<div class="card_title">
@@ -132,15 +145,10 @@
 					</div>
 				</div>
 			</div>
-
- 	    <?php 
- 	    		$row++;
- 	    		$x++;
+ 	    <?php
  	    	}
  	    ?>
         <?php
-            $expand = false;
-            include "../../shared/navigate.php";
  	    }
  	    ?>
 		</div>
@@ -169,5 +177,11 @@
 	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="del_link" style="text-decoration: none">Cancella</a></p>
 	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="ver_link" style="text-decoration: none">Lettura</a></p>
 </div>
+<a href="circolare.php?idc=0" id="float_btn" class="rb_button float_button">
+    <i class="fa fa-pencil"></i>
+</a>
+<a href="#" id="top_btn" class="rb_button float_button top_button">
+    <i class="fa fa-arrow-up"></i>
+</a>
 </body>
 </html>
