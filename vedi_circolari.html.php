@@ -3,6 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
+    <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -15,6 +16,26 @@
 			load_jalert();
 			setOverlayEvent();
 		});
+        $('#top_btn').click(function() {
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+            return false;
+        });
+
+        var amountScrolled = 200;
+
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > amountScrolled) {
+                $('#plus_btn').fadeOut('slow');
+                $('#float_btn').fadeIn('slow');
+                $('#top_btn').fadeIn('slow');
+            } else {
+                $('#float_btn').fadeOut('slow');
+                $('#plus_btn').fadeIn();
+                $('#top_btn').fadeOut('slow');
+            }
+        });
 	</script>
 </head>
 <body>
@@ -34,14 +55,7 @@
  	    <?php 
  	    }
  	    else{
- 	    	$x = 1;
- 	    	if($result->num_rows > $limit)
- 	    		$max = $limit;
- 	    	else
- 	    		$max = $result->num_rows;
- 	    	$row = 0;
 			while ($circolare = $result->fetch_assoc()){
-				if($x > $limit) break;
 				$sel_read = "SELECT data_lettura FROM rb_com_lettura_circolari WHERE id_circolare = {$circolare['id_circolare']} AND docente = {$_SESSION['__user__']->getUId()}";
 				$read = $db->executeCount($sel_read);
  	    ?>
@@ -63,15 +77,11 @@
 						</div>
 					</div>
 				</a>
- 	    <?php 
- 	    		$row++;
-				$x++;
+ 	    <?php
  	    	}
  	    ?>
 
         <?php
-            $expand = false;
-            include "../../shared/navigate.php";
  	    }
  	    ?>
 		</div>
@@ -95,5 +105,8 @@
 	<?php endif; ?>
 	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
 </div>
+<a href="#" id="top_btn" class="rb_button float_button top_button">
+    <i class="fa fa-arrow-up"></i>
+</a>
 </body>
 </html>
