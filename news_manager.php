@@ -6,8 +6,8 @@ check_session(AJAX_CALL);
 check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 
 if($_POST['action'] != 2){
-	$titolo = $db->real_escape_string(utf8_encode($_POST['titolo']));
-	$testo = $db->real_escape_string(utf8_encode(nl2br($_POST['testo'])));
+	$titolo = $db->real_escape_string($_POST['titolo']);
+	$testo = $db->real_escape_string(nl2br($_POST['testo']));
 }
 
 switch($_POST['action']){
