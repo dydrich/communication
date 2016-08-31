@@ -8,8 +8,8 @@ check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM);
 if($_POST['action'] != 2){
 	$data_evento = format_date($_POST['data_evento'], IT_DATE_STYLE, SQL_DATE_STYLE, "-");
 	$data_evento .= " ".$_POST['ora_evento'];
-	$titolo = utf8_encode($db->real_escape_string($_POST['titolo']));
-	$testo = utf8_encode(nl2br($db->real_escape_string($_POST['testo'])));
+	$titolo = $db->real_escape_string($_POST['titolo']);
+	$testo = nl2br($db->real_escape_string($_POST['testo']));
 	$id_padre = $_POST['evento_padre'];
 	$ordine_di_scuola = $_POST['ordine_di_scuola'];
 	if ($ordine_di_scuola == 0){
