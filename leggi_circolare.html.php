@@ -28,21 +28,21 @@
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<div style="width: 75%; margin: 15px auto; padding: 15px; border: 1px solid; ">
-		<div style="width: 40%; margin-left: 20px; float: left">Circolare n. <span class="bold_"><?php echo $circ['progressivo'] ?> del <?php echo format_date($circ['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></span></div>
-		<div style="width: 40%; margin-right: 30px; float: right; text-align: left">Destinatari:
+	<div style="width: 75%; margin: 15px auto; padding: 15px; border: 1px solid; overflow: hidden">
+		<div style="width: 40%; margin-left: 20px; float: left">Circolare n. <span class="_bold"><?php echo $circ['progressivo'] ?> del <?php echo format_date($circ['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?></span></div>
+		<div style="width: 40%; margin-left: 20px">Protocollo <span class="_bold"><?php echo $circ['protocollo'] ?></span></div>
+		<div style="width: 40%; margin-right: 30px; float: right; text-align: left; margin-bottom: 20px; margin-top: 10px">Destinatari:
 			<ul>
-		<?php 
-		$dests = preg_split("/\n/", $circ['destinatari']);
-		foreach ($dests as $d){
-		?>
+				<?php
+				$dests = preg_split("/\n/", $circ['destinatari']);
+				foreach ($dests as $d){
+				?>
 				<li style=""><?php echo $d ?>
-		<?php } ?>
+					<?php } ?>
 			</ul>
 		</div>
-		<div style="width: 40%; margin-left: 20px; ">Protocollo <span class="bold_"><?php echo $circ['protocollo'] ?></span></div>
-		<div style="width: 90%; margin-left: 20px; margin-top: 0; padding: 0; clear: both">Oggetto: <span class="bold_"><?php echo $circ['oggetto'] ?></span></div>
-		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><?php echo text2html($circ['testo']) ?></div>
+		<div style="width: 90%; margin-left: 20px; margin-top: 20px; padding: 0; clear: both">Oggetto: <span class="_bold"><?php echo $circ['oggetto'] ?></span></div>
+		<div style="width: 90%; margin-left: 20px; margin-top: 25px; line-height: 18px"><?php echo text2html($circ['testo']) ?></div>
 		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><?php if (isset($circ['allegato'])): ?>Allegato: <a class="dwl" href="#" onclick="dwl(<?php echo $circ['id_allegato'] ?>, '../../modules/documents/download_manager.php?doc=allegato&id=<?php echo $circ['id_allegato'] ?>')"><?php echo $circ['allegato'] ?></a><?php endif; ?></div>
 		<p class="spacer"></p>
 	</div>
