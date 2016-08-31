@@ -33,7 +33,7 @@ class Message {
 	protected $from;
     /**
      * target
-     * @var UserBean
+     * @var int
      */
     protected $to;
 
@@ -59,12 +59,20 @@ class Message {
      * @var MYSQLDataLoader
      */
 	protected $datasource;
+
+	protected $state;
+	
+	const PUBLISHED = 1;
+	const REPORTED_FOR_SPAM = 2;
+	const REPORTED_FOR_VULGARITY = 3;
+	const DELETED_FOR_SPAM = 4;
+	const DELETED_FOR_VULGARITY = 5;
 	
 	/**
 	 * 
 	 * @param integer $tid
 	 * @param UserBean $sender
-	 * @param UserBean $target
+	 * @param int $target
 	 * @param DataLoader $ds
 	 */
     public function __construct($mid, $tid, UserBean $sender, $target, DataLoader $ds, $data){
@@ -73,6 +81,7 @@ class Message {
 		$this->to = $target;
 		$this->datasource = $ds;
 		$this->ID = $mid;
+	    $this->state = self::PUBLISHED;
 		if ($data != null){
 			$this->send_timestamp = $data['send_timestamp'];
 			if ($data['read_timestamp'] != ""){
@@ -81,7 +90,11 @@ class Message {
 			else {
 				$this->read_timestamp = null;
 			}
-			$this->text = utf8_encode($data['text']);
+			$this->text = $data['text'];
+			$this->state = $data['state'];
+		}
+		if ($this->state == self::DELETED_FOR_SPAM || $this->state == self::DELETED_FOR_VULGARITY) {
+			$this->hidden = true;
 		}
     }
 
@@ -112,6 +125,21 @@ class Message {
     public function setText($txt){
 		$this->text = $txt;
     }
+	
+	/**
+	 * @return mixed
+	 */
+	public function getState() {
+		return $this->state;
+	}
+	
+	/**
+	 * @param mixed $state
+	 */
+	public function setState($state) {
+		$this->state = $state;
+	}
+    
 
     public function setSendTimestamp($tm){
 		$this->send_timestamp = $tm;
@@ -144,10 +172,30 @@ class Message {
     	$this->datasource->executeUpdate("UPDATE rb_com_messages SET read_timestamp = NOW() WHERE tid = {$this->getThread()} AND mid = {$this->getID()}");
     }
     
-    public function delete(){
-    	if ($this->isRead()){
-    		return false;
-    	}
+    public function delete($reason){
+	    $this->report($reason);
+    }
+    
+    public function isReported() {
+    	return $this->state == self::REPORTED_FOR_SPAM || $this->state == self::REPORTED_FOR_VULGARITY;
+    }
+    
+	public function isDeleted() {
+		return $this->state == self::DELETED_FOR_SPAM || $this->state == self::DELETED_FOR_VULGARITY;
+	}
+    
+    public function report($reason) {
+    	$this->state = $reason;
+	    $this->datasource->executeUpdate("UPDATE rb_com_messages SET state = {$reason} WHERE tid = {$this->getThread()} AND mid = {$this->getID()}");
+    }
+    
+    public function restoreDatasource($ds) {
+    	$this->datasource = $ds;
+    }
+    
+    public function restore() {
+    	$this->report(1);
+	    return $this->text;
     }
 
 }

@@ -17,7 +17,7 @@ $_SESSION['thread'] = $thread;
 $_SESSION['threads'][$thread->getTid()] = $thread;
 
 try{
-	if ($thread->getType() == 'C') {
+	if ($thread->getType() == Thread::CONVERSATION) {
 		$thread->readAll($_SESSION['__user__']);
 	}
 	$_SESSION['thread'] = $thread;

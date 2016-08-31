@@ -7,7 +7,7 @@ require_once "../../lib/RBUtilities.php";
 
 check_session();
 
-$action = $_REQUEST['do'];
+$action = $_REQUEST['action'];
 
 switch ($action){
 	case "send":
@@ -17,13 +17,19 @@ switch ($action){
 		$th = null;
 		$rb = RBUtilities::getInstance($db);
 		if ($_REQUEST['tid'] == 0){
-			$th = new Thread(0, new MySQLDataLoader($db), date("Y-m-d H:i:s"), "", 'C', array($sender->getUniqID(), $target));
+			$th = new Thread(0, new MySQLDataLoader($db), date("Y-m-d H:i:s"), "", Thread::CONVERSATION, array($sender->getUniqID(), $target));
+			$th->setOwner($sender);
 			$th->save();
 			$_SESSION['threads'][$th->getTid()] = $th;
 		}
 		else {
 			$th = $_SESSION['thread'];
 			$th->restoreThread(new MySQLDataLoader($db));
+			if (!$th->isActive()) {
+				$response = ['status' => 'inactive'];
+				echo json_encode($response);
+				exit;
+			}
 		}
 		$msg = new Message(0, $th->getTid(), $sender, $th->getTid(), new MySQLDataLoader($db), null);
 		$msg->setText($text);
@@ -88,7 +94,48 @@ switch ($action){
 		$thread->deleteUser($us);
 		unset($_SESSION['threads'][$tid]);
 		header("Content-type: application/json");
-		$response = array("status" => 'ok');
+		$response = ["status" => 'ok'];
+		echo json_encode($response);
+		exit;
+		break;
+	case "report":
+		$mid = $_REQUEST['mid'];
+		$state = $_REQUEST['state'];
+		$tid = $_REQUEST['tid'];
+		$us = $_SESSION['__user__']->getUniqID();
+		$thread = $_SESSION['threads'][$tid];
+		$thread->restoreThread(new MySQLDataLoader($db));
+		$thread->reportMessage($mid, $state);
+		$db->executeUpdate("INSERT INTO rb_log (utente, tipo_evento, numeric1, numeric2) VALUES ({$us}, 6, {$mid}, {$state})");
+		header("Content-type: application/json");
+		$response = ["status" => 'ok'];
+		echo json_encode($response);
+		exit;
+		break;
+	case "delete":
+		$mid = $_REQUEST['mid'];
+		$state = $_REQUEST['state'];
+		$tid = $_REQUEST['tid'];
+		$us = $_SESSION['__user__']->getUniqID();
+		$thread = $_SESSION['threads'][$tid];
+		$thread->restoreThread(new MySQLDataLoader($db));
+		$thread->deleteMessage($mid, $state);
+		$db->executeUpdate("INSERT INTO rb_log (utente, tipo_evento, numeric1, numeric2) VALUES ({$us}, 7, {$mid}, {$state})");
+		header("Content-type: application/json");
+		$response = ["status" => 'ok', "message" => 'Messaggio cancellato'];
+		echo json_encode($response);
+		exit;
+		break;
+	case "restore":
+		$mid = $_REQUEST['mid'];
+		$tid = $_REQUEST['tid'];
+		$us = $_SESSION['__user__']->getUniqID();
+		$thread = $_SESSION['threads'][$tid];
+		$thread->restoreThread(new MySQLDataLoader($db));
+		$txt = $thread->restoreMessage($mid);
+		$db->executeUpdate("INSERT INTO rb_log (utente, tipo_evento, numeric1, numeric2) VALUES ({$us}, 7, {$mid}, 1)");
+		header("Content-type: application/json");
+		$response = ["status" => 'ok', "text" => $txt, "message" => 'Messaggio approvato'];
 		echo json_encode($response);
 		exit;
 		break;
