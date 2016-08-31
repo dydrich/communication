@@ -44,7 +44,7 @@
 					?>
 					<div class="card <?php if ($event['data_evento'] < date("Y-m-d")) echo "no_permission _normal"  ?>" id="row_<?php echo $event['id_evento'] ?>">
 						<div class="card_title card_nocontent">
-							<span class="<?php if ($event['data_evento'] < date("Y-m-d")) echo "_normal"  ?>"><?php echo truncateString(utf8_decode($event['abstract']), 80) ?></span>
+							<span class="<?php if ($event['data_evento'] < date("Y-m-d")) echo "_normal"  ?>"><?php echo truncateString($event['abstract'], 80) ?></span>
 							<div style="width: 200px; text-align: left" class="fright _normal normal">
 								<?php if ($count_sons < 1) echo ucfirst($date_string) . " ore " . $ora . ""; else echo("---") ?>
 							</div>

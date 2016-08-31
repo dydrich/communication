@@ -98,7 +98,7 @@
 	    <div class="card" id="row_<?php echo $news['id_news'] ?>">
 		    <div class="card_title">
 			    <a href="news.php?idn=<?php echo $news['id_news'] ?>" class="mod_link">
-				    <?php print utf8_decode(truncateString($news['abstract'], 72)) ?>
+				    <?php print truncateString($news['abstract'], 72) ?>
 			    </a>
 			    <div style="float: right; margin-right: 20px" id="del_<?php echo $news['id_news'] ?>">
 				    <a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>admin/adm_news/news_manager.php?action=2&_id=<?php print $news['id_news'] ?>" class="del_link">
@@ -108,7 +108,7 @@
 		    </div>
 		    <div class="card_minicontent">
 			    <div class="minicard">
-				    by <?php print utf8_decode($news['nome']." ".$news['cg']) ?>
+				    by <?php print $news['nome']." ".$news['cg'] ?>
 			    </div>
 		    </div>
 	    </div>

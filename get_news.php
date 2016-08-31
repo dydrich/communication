@@ -16,5 +16,5 @@ try{
 }
 $news = $res_news->fetch_assoc();
 
-$response = array("status" => "ok", "message" => utf8_decode($news['testo']), "abstract" => utf8_decode($news['abstract']));
+$response = array("status" => "ok", "message" => $news['testo'], "abstract" => $news['abstract']);
 echo json_encode($response);

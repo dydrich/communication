@@ -68,13 +68,13 @@
 		<tr>
 			<td style="width: 30%">Titolo</td>
 			<td style="width: 70%">
-				<input type="text" name="titolo" id="titolo" style="width: 350px; font-size: 11px; border: 1px solid #AAAAAA" value="<?php if(isset($news)) echo utf8_decode($news['abstract']) ?>" />
+				<input type="text" name="titolo" id="titolo" style="width: 350px; font-size: 11px; border: 1px solid #AAAAAA" value="<?php if(isset($news)) echo $news['abstract'] ?>" />
 			</td> 
 		</tr>
 		<tr>
 			<td style="width: 30%">Testo</td>
 			<td style="width: 70%">
-				<textarea name="testo" id="testo" style="width: 350px; height: 100px; font-size: 11px; border: 1px solid #AAAAAA"><?php if(isset($news)) echo utf8_decode($news['testo']) ?></textarea>
+				<textarea name="testo" id="testo" style="width: 350px; height: 100px; font-size: 11px; border: 1px solid #AAAAAA"><?php if(isset($news)) echo $news['testo'] ?></textarea>
 			</td> 
 		</tr>
 		<tr>

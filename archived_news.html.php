@@ -42,11 +42,11 @@
 				?>
 				<div class="card" id="row_<?php echo $news['id_news'] ?>">
 					<div class="card_title">
-						<?php print utf8_decode(truncateString($news['abstract'], 72)) ?>
+						<?php print truncateString($news['abstract'], 72) ?>
 					</div>
 					<div class="cardcontent">
 						<p>
-							<?php echo utf8_decode($news['testo']) ?>
+							<?php echo $news['testo'] ?>
 						</p>
 						<p style="margin-top: 5px; border-top: 1px solid #CCCCCC; font-style: italic">
 							Pubblicata <?php echo $date_string ?>

@@ -85,7 +85,7 @@
 		<tr>
             <td style="width: 30%"><label for="titolo">Titolo</label></td>
             <td style="width: 70%">
-                <input type="text" id="titolo" autofocus style="width: 350px" value="<?php if(isset($evs)) print utf8_decode($evs['abstract']) ?>" name="titolo" />
+                <input type="text" id="titolo" autofocus style="width: 350px" value="<?php if(isset($evs)) print $evs['abstract'] ?>" name="titolo" />
             </td>
         </tr>
         <tr>
@@ -148,7 +148,7 @@
         <tr>
             <td style="width: 30%; vertical-align: middle"><label for="testo">Testo</label></td>
             <td style="width: 70%">
-                <textarea style="width: 350px; height: 100px" name="testo" id="testo"><?php if(isset($evs)) print utf8_decode($evs['testo']) ?></textarea>
+                <textarea style="width: 350px; height: 100px" name="testo" id="testo"><?php if(isset($evs)) print $evs['testo'] ?></textarea>
             </td>
         </tr>
 		<tr>
