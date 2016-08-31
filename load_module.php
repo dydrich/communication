@@ -39,40 +39,22 @@ else {
 	$user_type = "student";
 }
 $_SESSION['user_type'] = $user_type;
-$uniqID = $db->executeCount("SELECT id FROM rb_com_users WHERE uid = {$uid} AND type = '{$user_type}'");
-$uid = $_SESSION['__user__']->getUid();
-$sel_th = "SELECT rb_com_threads.* FROM rb_com_threads, rb_com_utenti_thread WHERE tid = thread AND utente = {$uniqID} ORDER BY last_message DESC";
-$res_th = $db->execute($sel_th);
-$rb = RBUtilities::getInstance($db);
-if ($res_th->num_rows > 0){
-	$threads = array();
-	while ($th = $res_th->fetch_assoc()){
-		if ($th['owner'] != "" && $th['owner'] != null) {
-			$owner = $rb->loadUserFromUniqID($th['owner']);
-			//$other_user = $u2;
-		}
-		else {
-			$owner = "";
-		}
-		try {
-			$thread = new Thread($th['tid'], new MySQLDataLoader($db), $th['creation']);
-		} catch (MySQLException $ex) {
-			echo $ex->getMessage()."<br>";
-			echo __FILE__."<br>";
-			echo $ex->getQuery()."<br>";
-			exit;
-		}
-		if ($th['type'] == 'G') {
-			$thread->setName($th['name']);
-			$thread->setType('G');
-		}
-		$threads[$th['tid']] = $thread;
-	}
-	$_SESSION['threads'] = $threads;
-}
 
 if (isset($_REQUEST['page'])){
-	header("Location: {$_REQUEST['page']}.php");
+	if ($_REQUEST['page'] == 'admin') {
+		$header = "../../../intranet/{$_SESSION['__mod_area__']}/header.php";
+		$footer = "../../../intranet/{$_SESSION['__mod_area__']}/footer.php";
+		if ($_REQUEST['area'] == 'admin') {
+			$header = "../../../admin/header.php";
+			$footer = "../../../admin/footer.php";
+		}
+		$_SESSION['header'] = $header;
+		$_SESSION['footer'] = $footer;
+		header("Location: admin/index.php");
+	}
+	else {
+		header("Location: {$_REQUEST['page']}.php");
+	}
 }
 else {
 	header("Location: {$module['front_page']}");
