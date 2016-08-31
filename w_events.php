@@ -47,8 +47,12 @@ while($impegno = $res_impegni->fetch_assoc()){
 ?>
 <p class="w_text" style="margin: 0">
 <a href="#" onclick="$('#testo_<?php echo $impegno['id_evento'] ?>').toggle(1000)" class="no_decoration">
-<strong><?php if($impegno['red_style'] == "yes") print "<span class='attention'>" ?><?php print format_date($data, SQL_DATE_STYLE, IT_DATE_STYLE, "/")." ".substr($ora, 0, 5) ?><?php if($impegno['red_style'] == "yes") print "</span>" ?></strong><br />
-<?php print utf8_decode($impegno['abstract']) ?>
+<strong>
+    <?php if($impegno['red_style'] == "yes") print "<span class='attention'>" ?>
+    <?php print format_date($data, SQL_DATE_STYLE, IT_DATE_STYLE, "/")." ".substr($ora, 0, 5) ?>
+    <?php if($impegno['red_style'] == "yes") print "</span>" ?>
+</strong><br />
+<?php print $impegno['abstract'] ?>
 </a>
 </p>
 <p id="testo_<?php echo $impegno['id_evento'] ?>" class="evento" style="display: none"><?php echo nl2br($testo) ?></p>

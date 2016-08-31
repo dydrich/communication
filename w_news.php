@@ -74,7 +74,9 @@
 						$bold = true;
 					}
 			?>
-				<a href="#" onclick="show_news(<?php print $news['id_news'] ?>, '<?php echo $_SESSION['__path_to_root__'] ?>')" class="open_news<?php if($red) echo " attention"; if ($bold) echo " _bold" ?>"><?php print truncateString(utf8_decode($news['abstract']), 80) ?></a><br />
+				<a href="#" onclick="show_news(<?php print $news['id_news'] ?>, '<?php echo $_SESSION['__path_to_root__'] ?>')" class="open_news<?php if($red) echo " attention"; if ($bold) echo " _bold" ?>">
+                    <?php print truncateString($news['abstract'], 80) ?>
+                </a><br />
 			<?php 
 				}
 			}
