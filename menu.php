@@ -1,9 +1,4 @@
 <div class="smallbox" id="working">
-	<p class="menu_label act_icon">Comunicazioni</p>
-	<ul class="menublock" style="" dir="rtl">
-		<li><a href="threads.php" style="text-decoration: none">Messaggi</a></li>
-		<li><a href="files.php" style="text-decoration: none">File privati</a></li>
-	</ul>
 	<?php if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM) == true) { ?>
 	<p class="menu_label schedule_icon">Eventi e news</p>
 	<ul class="menublock" style="" dir="rtl">

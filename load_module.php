@@ -4,7 +4,6 @@
  * load the requested module
  */
 
-require_once "lib/Thread.php";
 require_once "../../lib/start.php";
 require_once "../../lib/RBUtilities.php";
 
@@ -22,11 +21,6 @@ $_SESSION['__modules__'][$module_code]['front_page'] = $module['front_page'];
 $_SESSION['__modules__'][$module_code]['path_to_root'] = $module['path_to_root'];
 
 $_SESSION['__mod_area__'] = $_REQUEST['area'];
-
-if ($module_code == "com"){
-	unset($_SESSION['threads']);
-	unset($_SESSION['thread']);
-}
 
 $user_type = "";
 if ($_SESSION['__user__'] instanceof SchoolUserBean){

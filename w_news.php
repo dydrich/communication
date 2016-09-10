@@ -53,8 +53,10 @@
 		<div class="welcome">
 			<p id="w_head">News <?php echo date("d/m/Y") ?></p>
 			<p class="w_text">
-			<?php 
-			$sel_news = "SELECT * FROM rb_com_news ORDER BY data DESC, ora DESC LIMIT ".$_SESSION['__config__']['num_news'];
+			<?php
+			$year = $_SESSION['__current_year__'];
+			$inizio_anno = format_date($year->get_data_apertura(), IT_DATE_STYLE, SQL_DATE_STYLE, "-");
+			$sel_news = "SELECT * FROM rb_com_news WHERE data >= '{$inizio_anno}' ORDER BY data DESC, ora DESC LIMIT ".$_SESSION['__config__']['num_news'];
 			$res_news = $db->executeQuery($sel_news);
 			if($res_news->num_rows < 1) {
 				echo "<span>Non &egrave; presente nessuna news.</span>";
