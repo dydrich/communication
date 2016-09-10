@@ -26,7 +26,6 @@
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<?php include_once 'w_msg.php'; ?>
 	<?php if ($_SESSION['__user__'] instanceof SchoolUserBean) include_once 'w_news.php'; ?>
 	<?php if ($_SESSION['__user__'] instanceof SchoolUserBean) include_once 'w_events.php'; ?>
 	<?php if ($_SESSION['__user__'] instanceof SchoolUserBean && $_SESSION['__user__']->isTeacher()) include_once 'w_circ.php'; ?>
