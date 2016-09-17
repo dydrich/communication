@@ -51,7 +51,10 @@
 				
 		</script>
 		<div class="welcome">
-			<p id="w_head">News <?php echo date("d/m/Y") ?></p>
+			<p id="w_head" style="margin-bottom: 0; background-image: none">
+				<i class="fa fa-newspaper-o" style="position: relative; left: -30px; font-size: 1.4em"></i>
+				<span style="position: relative; left: -20px">News <?php echo date("d/m/Y") ?></span>
+			</p>
 			<p class="w_text">
 			<?php
 			$year = $_SESSION['__current_year__'];

@@ -8,7 +8,7 @@
 require_once "../../lib/start.php";
 
 check_session();
-check_permission(DOC_PERM);
+check_permission(DOC_PERM|ATA_PERM);
 
 $drawer_label = "Elenco avvisi";
 

@@ -9,7 +9,7 @@
 require_once "../../lib/start.php";
 
 check_session();
-check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM|DOC_PERM);
+check_permission(DIR_PERM|DSG_PERM|SEG_PERM|APS_PERM|AIS_PERM|AMS_PERM|DOC_PERM|ATA_PERM);
 
 $drawer_label = "Elenco eventi";
 

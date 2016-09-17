@@ -8,7 +8,7 @@
 	</ul>
 	<?php
 	}
-	else if ($_SESSION['__user__']->check_perms(DOC_PERM) == true) {
+	else if ($_SESSION['__user__']->check_perms(DOC_PERM|ATA_PERM) == true) {
 	?>
 	<p class="menu_label schedule_icon">Eventi e news</p>
 	<ul class="menublock" style="" dir="rtl">
@@ -18,10 +18,10 @@
 	</ul>
 	<?php
 	}
-	if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM) == true): ?>
+	if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM|ATA_PERM) == true): ?>
 	<p class="menu_label data_icon">Circolari</p>
 	<ul class="menublock" style="" dir="rtl">
-	<?php if($_SESSION['__user__']->check_perms(DOC_PERM) == true): ?>
+	<?php if($_SESSION['__user__']->check_perms(DOC_PERM|ATA_PERM) == true): ?>
 		<li><a href="vedi_circolari.php" style="text-decoration: none">Leggi circolari</a></li>
 	<?php endif; ?>
 	<?php if($_SESSION['__user__']->check_perms(DIR_PERM|DSG_PERM|SEG_PERM) == true): ?>

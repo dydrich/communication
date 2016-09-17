@@ -25,7 +25,10 @@ if($res_impegni->num_rows > 0){
 ?>
 
 <div class="welcome">
-<p id="w_head">Prossimi impegni</p>
+	<p id="w_head" style="margin-bottom: 0; background-image: none">
+		<i class="fa fa-users" style="position: relative; left: -30px; font-size: 1.4em"></i>
+		<span style="position: relative; left: -20px">Prossimi impegni</span>
+	</p>
 <?php
 $shown_events = 0;
 while($impegno = $res_impegni->fetch_assoc()){

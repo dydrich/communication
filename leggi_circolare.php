@@ -3,7 +3,7 @@
 require_once "../../lib/start.php";
 
 check_session();
-check_permission(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM);
+check_permission(DIR_PERM|DSG_PERM|SEG_PERM|DOC_PERM|ATA_PERM);
 
 $sel_circ = "SELECT * FROM rb_com_circolari WHERE id_circolare = {$_REQUEST['idc']}";
 $res_circ = $db->execute($sel_circ);
