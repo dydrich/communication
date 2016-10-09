@@ -1,6 +1,11 @@
 <?php
 
-$sel_notices = "SELECT * FROM rb_com_avvisi WHERE data_scadenza >= NOW()";
+$groups = 2;
+if (!$_SESSION['__user__']->isTeacher()) {
+	$groups = 4;
+}
+
+$sel_notices = "SELECT * FROM rb_com_avvisi WHERE data_scadenza >= NOW() AND gruppi = {$groups}";
 $res_notices = $db->executeQuery($sel_notices);
 
 if ($res_notices->num_rows > 0){

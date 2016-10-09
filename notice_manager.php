@@ -3,16 +3,21 @@
 require_once "../../lib/start.php";
 
 check_session(AJAX_CALL);
-check_permission(DIR_PERM);
+check_permission(DIR_PERM|DSG_PERM);
 
 if($_POST['action'] != 2){
 	$data_scadenza = format_date($_POST['data'], IT_DATE_STYLE, SQL_DATE_STYLE, "-");
 	$testo = $db->real_escape_string(nl2br($_POST['testo']));
 }
 
+$groups = 2;
+if ($_SESSION['__role__'] == 'DSGA') {
+	$groups = 4;
+}
+
 switch($_POST['action']){
 	case 1:     // inserimento
-		$statement = "INSERT INTO rb_com_avvisi (data_scadenza, data_inserimento, testo) VALUES ('{$data_scadenza}', NOW(), '{$testo}')";
+		$statement = "INSERT INTO rb_com_avvisi (data_scadenza, data_inserimento, testo, gruppi) VALUES ('{$data_scadenza}', NOW(), '{$testo}', {$groups})";
 		$msg = "Avviso inserito correttamente";
 		break;
 	case 2:     // cancellazione

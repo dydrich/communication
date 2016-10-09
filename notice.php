@@ -3,7 +3,7 @@
 require_once "../../lib/start.php";
 
 check_session();
-check_permission(DIR_PERM);
+check_permission(DIR_PERM|DSG_PERM);
 
 $drawer_label = "Gestione avviso";
 
