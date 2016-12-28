@@ -13,68 +13,90 @@
 	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
 	<script type="text/javascript" src="../../js/page.js"></script>
 	<script type="text/javascript">
-	function del_news(id){
-		if(!confirm("Sei sicuro di voler cancellare questo avviso"))
-	        return false;
+        var id = 0;
+        var del_news = function(){
+            $('#confirm').fadeOut(10);
+            $.ajax({
+                type: "POST",
+                url: "notice_manager.php",
+                data: {action: 2, _i: id},
+                dataType: 'json',
+                error: function(data, status, errore) {
+                    j_alert("error", "Si è verificato un errore");
+                    return false;
+                },
+                succes: function(result) {
+                    j_alert("alert", "ok");
+                },
+                complete: function(data, status){
+                    r = data.responseText;
+                    var json = $.parseJSON(r);
+                    if(json.status == "kosql"){
+                        j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+                        return;
+                    }
+                    else {
+                        j_alert("alert", json.message);
+                        window.setTimeout(function() {
+                            $('#row_'+id).hide();
+                        }, 2000);
+                    }
+                }
+            });
+        }
 
-		$.ajax({
-			type: "POST",
-			url: "notice_manager.php",
-			data: {action: 2, _i: id},
-			dataType: 'json',
-			error: function(data, status, errore) {
-				j_alert("error", "Si e' verificato un errore");
-				return false;
-			},
-			succes: function(result) {
-				j_alert("alert", "ok");
-			},
-			complete: function(data, status){
-				r = data.responseText;
-				var json = $.parseJSON(r);
-				if(json.status == "kosql"){
-					j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
-					return;
-	            }
-				else {
-					$('#not1').text(json.message);
-					$('#not1').show(1000);
-					$('#row_'+id).hide();
-				}
-			}
-		});
-	}
+        $(function(){
+            load_jalert();
+            setOverlayEvent();
+            $('a.del_link').click(function(event){
+                event.preventDefault();
+                var strs = $(this).parent().attr("id").split("_");
+                id = strs[1];
+                j_alert("confirm", "Eliminare questo avviso?");
+            });
 
-	$(function(){
-		load_jalert();
-		setOverlayEvent();
-		$('a.del_link').click(function(event){
-			event.preventDefault();
-			var strs = $(this).parent().attr("id").split("_");
-			del_news(strs[1]);
-		});
+            $('a.mod_link').on('click', function (event) {
+                event.preventDefault();
+                var idn = $(this).data('id');
+                var tipo = $(this).data('type');
+                if(tipo == 2) {
+                    j_alert("error", "impossibile modificare questo tipo di avvisi");
+                }
+                else {
+                    document.location.href = "notice.php?idn="+idn;
+                }
+            });
 
-        $('#top_btn').click(function() {
-            $('html,body').animate({
-                scrollTop: 0
-            }, 700);
-            return false;
+            $('#okbutton').on('click', function (event) {
+                event.preventDefault();
+                del_news();
+            });
+
+            $('#top_btn').click(function() {
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 700);
+                return false;
+            });
+
+            var amountScrolled = 200;
+
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > amountScrolled) {
+                    $('#plus_btn').fadeOut('slow');
+                    $('#float_btn').fadeIn('slow');
+                    $('#top_btn').fadeIn('slow');
+                } else {
+                    $('#float_btn').fadeOut('slow');
+                    $('#plus_btn').fadeIn();
+                    $('#top_btn').fadeOut('slow');
+                }
+            });
         });
 
-        var amountScrolled = 200;
-
-        $(window).scroll(function() {
-            if ($(window).scrollTop() > amountScrolled) {
-                $('#plus_btn').fadeOut('slow');
-                $('#float_btn').fadeIn('slow');
-                $('#top_btn').fadeIn('slow');
-            } else {
-                $('#float_btn').fadeOut('slow');
-                $('#plus_btn').fadeIn();
-                $('#top_btn').fadeOut('slow');
-            }
-        });
-	});
+        var change_zone = function(zone){
+            document.location.href="notices.php?zone="+zone;
+        };
 	</script>
 </head>
 <body>
@@ -85,8 +107,23 @@
 <?php include "menu.php" ?>
 </div>
 <div id="left_col">
-	<div id="not1" class="notification"></div>
-	<div style="position: absolute; top: 75px; margin-left: 625px; margin-bottom: -5px" class="rb_button">
+    <?php if(!isset($_SESSION['__role__']) || $_SESSION['__role__'] != 'DSGA'): ?>
+    <div class="mdtabs" style="top: -20px">
+        <div class="mdtab<?php if ($zone == 2) echo " mdselected_tab" ?>">
+            <a href="#" onclick="change_zone(2)"><span>Docenti</span></a>
+        </div>
+        <div class="mdtab<?php if ($zone == 8) echo " mdselected_tab" ?>">
+            <a href="#" onclick="change_zone(8)"><span>Genitori</span></a>
+        </div>
+        <div class="mdtab<?php if ($zone == 4) echo " mdselected_tab" ?>">
+            <a href="#" onclick="change_zone(4)"><span>ATA</span></a>
+        </div>
+        <div class="mdtab<?php if ($zone == 0) echo " mdselected_tab" ?>">
+            <a href="#" onclick="change_zone(0)"><span>Tutti</span></a>
+        </div>
+    </div>
+    <?php endif; ?>
+	<div style="position: absolute; top: <?php if(!isset($_SESSION['__role__']) || $_SESSION['__role__'] != 'DSGA') echo '90'; else echo '75'; ?>px; margin-left: 625px; margin-bottom: -5px" class="rb_button">
 		<a href="notice.php?idn=0">
 			<img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/39.png" style="padding: 12px 0 0 12px" />
 		</a>
@@ -109,7 +146,7 @@
     ?>
 	    <div class="card" id="row_<?php echo $notice['id'] ?>">
 		    <div class="card_title">
-			    <a href="notice.php?idn=<?php print $notice['id'] ?>" class="mod_link">
+			    <a href="notice.php" data-id="<?php print $notice['id'] ?>" data-type="<?php echo $notice['tipo'] ?>" class="mod_link" style="<?php if($notice['tipo'] == 2) echo "color: #9E9E9E !important;" ?>">
 				    <?php print truncateString($notice['testo'], 72) ?>
 			    </a>
 			    <div style="float: right; margin-right: 20px" id="del_<?php print $notice['id'] ?>">

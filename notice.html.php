@@ -22,11 +22,44 @@
 			currentText: "Oggi",
 			closeText: "Chiudi"
 		});
+
+		$('#zone').on('change', function(event) {
+		   if($('#zone').val() == 2 || $('#zone').val() == 8) {
+		       $('#level_row').show(500);
+		       $('#classes_row').show(500);
+            }
+           else {
+		       $('#level_row').hide(500);
+               $('#classes_row').hide(500);
+            }
+        });
+
+		$('#tipo').on('change', function(event) {
+             if($(this).val() == 2) {
+                 $('#zone').val(8).trigger('change');
+                 $('#level_row').hide();
+                 $('#classes_row').hide();
+                 $('#label_date').text('Data sciopero');
+                 $('#testo').text("Si informano i sig.ri genitori che per ----- è previsto uno sciopero generale per l’intera giornata di tutto " +
+                     "il personale della scuola. In conseguenza di ciò, si preavvisano i sig.ri utenti che l’erogazione del servizio scolastico " +
+                     "potrà subire modifiche, ritardi e inconvenienti causati dall’astensione dei lavoratori. Pertanto, i sig.ri genitori tutti " +
+                     "sono invitati ad accompagnare i propri figli per la verifica della situazione.");
+             }
+             else {
+                 $('#zone').val(0).trigger('change');
+                 $('#label_date').text('Data scadenza');
+                 $('#testo').empty();
+             }
+        });
+
+        $('#level').on('change', function(event) {
+            get_classes($('#level').val());
+        });
 	});
 
-	function registra(){
+	 var registra = function(){
 		if(trim(document.forms[0].data.value) == ""){
-			j_alert("error", "La data di scadeza è obbligatoria.");
+			j_alert("error", "La data di scadenza è obbligatoria.");
 			return false;
 		}
 		else if(trim(document.forms[0].testo.value) == ""){
@@ -57,7 +90,39 @@
 				}
 			}
 		});
-	}
+	};
+
+    var get_classes = function (level) {
+        $.ajax({
+            type: "POST",
+            url: "../../shared/get_classes.php",
+            data: {school_level: level},
+            dataType: 'json',
+            error: function(data, status, errore) {
+                j_alert("error", "Si è verificato un errore di rete");
+                return false;
+            },
+            succes: function(result) {
+
+            },
+            complete: function(data, status){
+                r = data.responseText;
+                var json = $.parseJSON(r);
+                if(json.status == "kosql"){
+                    j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
+                }
+                else {
+                    var listitems = '';
+                    listitems += "<option value='0'>Tutte</option>";
+                    var classi = json.data;
+                    $.each(classi, function (index, val) {
+                        listitems += "<option value='"+val.id+"'>"+val.classe+"</option>";
+                    });
+                    $('#classes').empty().append(listitems);
+                }
+            }
+        });
+    };
 	</script>
 </head>
 <body>
@@ -69,18 +134,83 @@
 </div>
 <div id="left_col">
 	<div id="not1" class="notification"></div>
- 	<form id="my_form" method="post" action="../../admin/adm_news/news_manager.php" style="border: 1px solid #666666; border-radius: 10px; margin-top: 20px; text-align: left; width: 560px; margin-left: auto; margin-right: auto">
+ 	<form id="my_form" method="post" action="notice_manager.php" style="margin-top: 20px; text-align: left; width: 560px; margin-left: auto; margin-right: auto">
 	<table style="width: 500px; margin-left: auto; margin-right: auto; margin-top: 30px; margin-bottom: 20px">
+        <tr id="types_row">
+            <td style="width: 30%">Tipo avviso</td>
+            <td style="width: 70%">
+                <select name="tipo" id="tipo" style="width: 350px" <?php if(isset($notice)) echo "readonly" ?>>
+                    <?php
+					foreach ($tipo_avviso as $sl){
+						?>
+                        <option <?php if(isset($notice) && $sl['id_tipo'] == $notice['tipo']) echo "selected" ?> value="<?php echo $sl['id_tipo'] ?>"><?php echo $sl['tipo'] ?></option>
+						<?php
+					}
+					?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="min-height: 20px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 30%">Area</td>
+            <td style="width: 70%">
+                <select name="zone" id="zone" style="width: 350px">
+                    <option value="0">Tutte</option>
+                    <option <?php if(isset($notice) && 2 == $notice['gruppi']) echo "selected" ?> value="2">Docenti</option>
+                    <option <?php if(isset($notice) && 4 == $notice['gruppi']) echo "selected" ?> value="4">ATA</option>
+                    <option <?php if(isset($notice) && 8 == $notice['gruppi']) echo "selected" ?> value="8">Genitori</option>
+                </select>
+            </td>
+        </tr>
+        <tr style="<?php if(!isset($notice) || $notice['ordine_di_scuola'] == "") echo "display: none" ?>" id="level_row">
+            <td style="width: 30%">Ordine di scuola</td>
+            <td style="width: 70%">
+                <select name="level" id="level" style="width: 350px">
+                    <option value="0">Tutti</option>
+                    <?php
+					foreach ($_SESSION['__school_level__'] as $k => $sl){
+					?>
+                    <option <?php if(isset($notice) && $k == $notice['ordine_di_scuola']) echo "selected" ?> value="<?php echo $k ?>"><?php echo $sl ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr style="<?php if(!isset($notice) || $notice['classe'] == "") echo "display: none" ?>" id="classes_row">
+            <td style="width: 30%">Classi</td>
+            <td style="width: 70%">
+                <select name="classes[]" id="classes" style="width: 350px" multiple>
+                    <option value="0">Tutte</option>
+					<?php
+					foreach ($classi as $k => $sl){
+					    $cls = null;
+					    if(isset($notice) && $notice['classe'] != "") {
+					        $cls = explode(",", $notice['classe']);
+                        }
+						?>
+                        <option value="<?php echo $k ?>" <?php if($cls != null && in_array($k, $cls)) echo "selected" ?>><?php echo $sl['classe']."-".$sl['sede'] ?></option>
+						<?php
+					}
+					?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="min-height: 20px;">&nbsp;</td>
+        </tr>
 		<tr>
-			<td style="width: 30%">Data scadenza</td>
+			<td style="width: 30%" id="label_date">Data scadenza</td>
 			<td style="width: 70%">
-				<input type="text" name="data" id="data" style="width: 350px; font-size: 11px; border: 1px solid #AAAAAA" value="<?php if(isset($notice)) echo format_date($notice['data_scadenza'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?>" />
+				<input type="text" name="data" id="data" style="width: 350px" <?php if(isset($notice) && $notice['tipo'] == 2) echo "disabled" ?> value="<?php if(isset($notice)) echo format_date($notice['data_scadenza'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?>" />
 			</td> 
 		</tr>
 		<tr>
 			<td style="width: 30%">Testo</td>
 			<td style="width: 70%">
-				<textarea name="testo" id="testo" style="width: 350px; height: 100px; font-size: 11px; border: 1px solid #AAAAAA"><?php if(isset($notice)) echo $notice['testo'] ?></textarea>
+				<textarea name="testo" id="testo" style="width: 350px; height: 100px"><?php if(isset($notice)) echo $notice['testo'] ?></textarea>
 			</td> 
 		</tr>
 		<tr>

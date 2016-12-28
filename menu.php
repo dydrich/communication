@@ -5,6 +5,7 @@
 		<li><a href="events.php" style="text-decoration: none">Eventi</a></li>
 		<li><a href="news_list.php" style="text-decoration: none">News</a></li>
 		<li><a href="notices.php" style="text-decoration: none">Avvisi</a></li>
+        <li><a href="assemblies.php" style="text-decoration: none">Assemblee</a></li>
 	</ul>
 	<?php
 	}
