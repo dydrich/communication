@@ -13,10 +13,9 @@
 	<script type="text/javascript" src="../../js/jquery.show_char_limit-1.2.0.js"></script>
 	<script type="text/javascript" src="../../js/page.js"></script>
 	<script type="text/javascript">
-		var del_evs = function(id){
-			if(!confirm("Sei sicuro di voler cancellare questo evento?"))
-		        return false;
-
+        var id = 0;
+		var del_evs = function(){
+            $('#confirm').fadeOut(10);
 			$.ajax({
 				type: "POST",
 				url: "events_manager.php",
@@ -49,7 +48,8 @@
 			$('a.del_link').click(function(event){
 				event.preventDefault();
 				var strs = $(this).parent().attr("id").split("_");
-				del_evs(strs[1]);
+				id = strs[1];
+                j_alert("confirm", "Eliminare questo evento?");
 			});
             $('#top_btn').click(function() {
                 $('html,body').animate({
@@ -70,6 +70,11 @@
                     $('#plus_btn').fadeIn();
                     $('#top_btn').fadeOut('slow');
                 }
+            });
+
+            $('#okbutton').on('click', function (event) {
+                event.preventDefault();
+                del_evs();
             });
 		});
 	</script>
