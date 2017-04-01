@@ -14,7 +14,7 @@ $res_notices = $db->executeQuery($sel_notices);
 if ($res_notices->num_rows > 0){
 ?>
 	<div class="welcome">
-		<p id="w_head">Avviso <?php echo date("d/m/Y") ?></p>
+		<p id="w_head" class="attention">Importante <?php echo date("d/m/Y") ?></p>
 		<?php 
 		if ($res_notices->num_rows > 0){ 
 			while ($notice = $res_notices->fetch_assoc()){
@@ -35,8 +35,8 @@ if ($res_notices->num_rows > 0){
                     }
                 }
 				$cls = null;
-				if(isset($notice) && $notice['classe'] != "") {
-					$cls = explode(",", $notice['classe']);
+				if(isset($notice) && $notice['classe'] != "" && $notice['classe'] != 0) {
+				    $cls = explode(",", $notice['classe']);
 					$_cl = $_SESSION['__user__']->getClasses();
 					$cl = array_keys($_cl);
 					$intersect = array_intersect($cl, $cls);
