@@ -1,7 +1,7 @@
 <?php
 
 $groups = 2;
-if ($_SESSION['__area__'] == 'ata') {
+if ($_SESSION['__area__'] == 'ata' || $_SESSION['__area__'] == 'manager') {
 	$groups = 4;
 }
 else if ($_SESSION['__area__'] == 'parents'){
