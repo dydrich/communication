@@ -2,8 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolari</title>
-    <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
+	<title><?php print $_SESSION['__config__']['intestazione_scuola'] ?>:: circolare</title>
 	<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,400italic,600,600italic,700,700italic,900,200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/reg.css" type="text/css" media="screen,projection" />
 	<link rel="stylesheet" href="../../css/general.css" type="text/css" media="screen,projection" />
@@ -11,30 +10,49 @@
 	<link rel="stylesheet" href="../../css/site_themes/<?php echo getTheme() ?>/jquery-ui.min.css" type="text/css" media="screen,projection" /><script type="text/javascript" src="../../js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="../../js/page.js"></script>
 	<script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script type="text/javascript">
-		$(function(){
-			load_jalert();
-			setOverlayEvent();
-		});
-        $('#top_btn').click(function() {
-            $('html,body').animate({
-                scrollTop: 0
-            }, 700);
-            return false;
-        });
+	<script>
+        var save_data = function(){
+            var url = "../../shared/save_user_config.php";
+            $('#field').val("ordine_circolari");
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $('#st_form').serialize(true),
+                dataType: 'json',
+                error: function() {
+                    j_alert("error", "Errore di trasmissione dei dati");
+                },
+                succes: function() {
 
-        var amountScrolled = 200;
+                },
+                complete: function(data){
+                    r = data.responseText;
+                    if(r == "null"){
+                        return false;
+                    }
+                    var json = $.parseJSON(r);
+                    if (json.status == "kosql"){
+                        sqlalert();
+                        console.log(json.dbg_message);
+                    }
+                    else if(json.status == "ko") {
+                        j_alert("error", "Impossibile completare l'operazione richiesta. Riprovare tra qualche secondo o segnalare l'errore al webmaster");
+                        return;
+                    }
+                    else {
+                        j_alert("alert", json.message);
+                    }
+                }
+            });
+        };
 
-        $(window).scroll(function() {
-            if ($(window).scrollTop() > amountScrolled) {
-                $('#plus_btn').fadeOut('slow');
-                $('#float_btn').fadeIn('slow');
-                $('#top_btn').fadeIn('slow');
-            } else {
-                $('#float_btn').fadeOut('slow');
-                $('#plus_btn').fadeIn();
-                $('#top_btn').fadeOut('slow');
-            }
+        $(function(){
+            load_jalert();
+            setOverlayEvent();
+            $('#save_btn').click(function(event){
+                event.preventDefault();
+                save_data();
+            });
         });
 	</script>
 </head>
@@ -43,60 +61,33 @@
 <?php include "navigation.php" ?>
 <div id="main">
 	<div id="right_col">
-	<?php include "menu.php" ?>
+		<?php include "../../intranet/{$_SESSION['__mod_area__']}/profile_menu.php" ?>
 	</div>
 	<div id="left_col">
-		<div id="not1" class="notification"></div>
-		<div class="card_container">
- 	    <?php 
- 	    if($result->num_rows < 1){
- 	    ?>
- 	    <div style="width: 90%; margin: auto; font-weight: bold; font-size: 1.1em; text-align: center">Nessuna circolare presente</div>
- 	    <?php 
- 	    }
- 	    else{
- 	    ?>
-              <div style="margin-bottom: 15px">
-                  <a href="vedi_circolari.php?order=<?php echo $order_link ?>"><?php echo $order_string ?></a>
-              </div>
-        <?php
-			while ($circolare = $result->fetch_assoc()){
-			    try {
-					$owner = $db->executeCount("SELECT CONCAT_WS(' ', nome, cognome) FROM rb_utenti WHERE uid = ".$circolare['owner']);
-                } catch (MySQLException $ex) {
-
-                }
-
-			    $read = $circolare['dt'];
- 	    ?>
-				<a href="leggi_circolare.php?idc=<?php echo $circolare['id_circolare']; if ($read == 0) echo "&read=1"  ?>">
-					<div class="card" id="row_<?php echo $circolare['id_circolare'] ?>" style="<?php if ($read != 0) echo " font-weight: normal !important" ?>">
-						<div class="card_title" style="<?php if ($read != 0) echo " font-weight: normal !important" ?>">
-							<?php echo truncateString($circolare['oggetto'], 90) ?>
-						</div>
-						<div class="card_varcontent" style="overflow: hidden">
-							<div class="card_row">
-								Circolare n. <?php echo $circolare['progressivo'] ?> del <?php echo format_date($circolare['data_circolare'], SQL_DATE_STYLE, IT_DATE_STYLE, "/") ?>
-							</div>
-							<div class="minicard">
-								Inserita da <?php echo $owner ?>
-							</div>
-							<div class="minicard" style="margin-left: 7.5%">
-								Protocollo: <?php echo $circolare['protocollo'] ?>
-							</div>
-						</div>
+		<div style="width: 75%; margin: 15px auto; padding: 15px">
+			<form method="post" name="st_form" id="st_form" class="no_border">
+				<div style="width: 65%; margin: 15px auto; padding: 20px" class="conf_frame">
+					<span class="_bold">Ordine di visualizzazione delle circolari</span>
+					<p>
+						<label for="active">Prima quelle da leggere</label>
+						<input type="radio" name="active" id="active" value="1" <?php if (1 == $active) echo "checked" ?> />
+					</p>
+					<p>
+						<label for="active">Per numero di circolare</label>
+						<input type="radio" name="active" id="active" value="0" <?php if (0 == $active) echo "checked" ?> />
+					</p>
+					<div class="accent_button" style="height: 20px; margin-right: 0; margin-top: 20px">
+						<a href="../../shared/no_js.php" id="save_btn" style="">Registra</a>
 					</div>
-				</a>
- 	    <?php
- 	    	}
- 	    ?>
-
-        <?php
- 	    }
- 	    ?>
+				</div>
+				<input type="hidden" name="field" id="field" value="" />
+				<input type="hidden" name="id_param" id="id_param" value="5" />
+			</form>
+			<p class="spacer"></p>
 		</div>
+
 	</div>
-<p class="spacer"></p>
+	<p class="spacer"></p>
 </div>
 <?php include "../../intranet/{$_SESSION['__mod_area__']}/footer.php" ?>
 <div id="drawer" class="drawer" style="display: none; position: absolute">
@@ -115,8 +106,5 @@
 	<?php endif; ?>
 	<div class="drawer_lastlink"><a href="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>shared/do_logout.php"><img src="<?php echo $_SESSION['__modules__']['com']['path_to_root'] ?>images/51.png" style="margin-right: 10px; position: relative; top: 5%" />Logout</a></div>
 </div>
-<a href="#" id="top_btn" class="rb_button float_button top_button">
-    <i class="fa fa-arrow-up"></i>
-</a>
 </body>
 </html>
