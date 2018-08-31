@@ -39,6 +39,7 @@
 				complete: function(data, status){
 					r = data.responseText;
 					var json = $.parseJSON(r);
+					alert(json.status);
 					if(json.status == "kosql"){
 						j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
 		            }
@@ -46,7 +47,7 @@
 						j_alert("alert", json.message);
 						setTimeout(function(){
 							if ($('#idc').val() == 0) {
-								document.location.href = "circolare.php?idc=0";
+								document.location.href = "allegati_circolare.php?idc="+json.id;
 							}
 							else {
 								document.location.href = "circolari.php";
@@ -89,12 +90,17 @@
 					}
 					else {
 						j_alert("alert", "File cancellato");
-						$('#aframe').attr('src', '../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=files');
+						$('#aframe').attr('src', '../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=allegati');
 						$('#server_file').val("");
 					}
 				}
 		    });
 		};
+
+		var reload_iframe = function() {
+            $('#aframe').attr('src', '../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=allegati&ext=pdf');
+            $('#server_file').val("");
+        };
 
 		var loading = function(vara){
 			background_process("Attendere il caricamento del file", 30, false);
@@ -149,24 +155,57 @@
 			</td>
 		</tr>
 		<tr>
-			<td style='width: 20%' id='lab6' class='label'>Testo *</td>
+			<td style='width: 20%' class='label'>PDF firmato *</td>
 			<td style="width: 80%">
-				<textarea style='width: 95%; height: 100px' name='txt' id='txt' ><?php if(isset($circ)) echo $circ['testo'] ?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td style='width: 20%' class='label'>Allegato</td>
-			<td style="width: 80%">
-			<?php if (isset($circ) && $allegato != ""){ ?>
-				<input class="form_input" type="text" name="fname" id="fname" style="width: 95%" readonly value="<?php print $allegato ?>"/>
-			<?php } else if (!isset($circ)){ ?>
-				<div id="iframe"><iframe src="../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=allegati" style="border: none; width: 95%;  margin: 0px; height: 80px" id="aframe"></iframe></div>
+			<?php
+            if (isset($circ) && count($pdf) != 0) {
+					?>
+                <div style="width: 100%">
+                    <?php print $pdf['file'] ?>
+                    <a href="#"><i class="fa fa-trash normal" style="margin-left: 10px"></i></a>
+                </div>
+					<?php
+			}
+			else if (!isset($circ)){
+			    ?>
+				<div id="iframe"><iframe src="../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=allegati&ext=pdf" style="border: none; width: 95%;  margin: 0px; height: 80px" id="aframe"></iframe></div>
 				<a href="#" onclick="del_file()" id="del_upl" style="float: right; padding-top: 45px; padding-right: 20px; display: none; text-decoration: none">Annulla upload</a>
-			<?php } else { ?>
-				Nessun file allegato
-			<?php } ?>
+			<?php
+			}
+			else {
+			    ?>
+				PDF firmato non inserito
+			<?php
+			}
+			?>
 			</td>
 		</tr>
+        <!--<tr>
+            <td style='width: 20%; padding-top: 20px;' class='label'>Allegati</td>
+            <td style="width: 80%; padding-top: 20px;">
+				<?php
+				if (isset($circ) && count($allegati) != 0) {
+					foreach ($allegati as $allegato) {
+						?>
+                        <input class="form_input" type="text" name="fname" id="fname" style="width: 90%" readonly value="<?php print $allegato['file'] ?>"/>
+                        <a href="#"><i class="fa fa-trash normal" style="margin-left: 10px"></i></a>
+						<?php
+					}
+				}
+				else if (!isset($circ)){
+					?>
+                    <div id="iframe"><iframe src="../../modules/documents/upload_manager.php?upl_type=document&area=teachers&tipo=allegati" style="border: none; width: 95%;  margin: 0px; height: 80px" id="aframe"></iframe></div>
+                    <a href="#" onclick="del_file()" id="del_upl" style="float: right; padding-top: 45px; padding-right: 20px; display: none; text-decoration: none">Annulla upload</a>
+					<?php
+				}
+				else {
+					?>
+                    Nessun file allegato
+					<?php
+				}
+				?>
+            </td>
+        </tr>-->
 		<tr>
 			<td colspan="2">&nbsp;
 				<input type="hidden" name="action" id="action" value="<?php echo $action ?>" />

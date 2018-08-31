@@ -41,10 +41,24 @@
 					<?php } ?>
 			</ul>
 		</div>
-		<div style="width: 90%; margin-left: 20px; margin-top: 20px; padding: 0; clear: both">Oggetto: <span class="_bold"><?php echo $circ['oggetto'] ?></span></div>
+		<div style="width: 90%; margin-left: 20px; margin-top: 20px; padding: 0; clear: both">Oggetto: <span class=""><?php echo $circ['oggetto'] ?></span></div>
 		<div style="width: 90%; margin-left: 20px; margin-top: 25px; line-height: 18px"><?php echo text2html($circ['testo']) ?></div>
-		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><?php if (isset($circ['allegato'])): ?>Allegato: <a class="dwl" href="#" onclick="dwl(<?php echo $circ['id_allegato'] ?>, '../../modules/documents/download_manager.php?doc=allegato&id=<?php echo $circ['id_allegato'] ?>')"><?php echo $circ['allegato'] ?></a><?php endif; ?></div>
-		<p class="spacer"></p>
+		<div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px"><span class="_bold"><?php if (isset($circ['allegato'])): ?>PDF firmato: </span><a class="dwl" href="#" onclick="dwl(<?php echo $circ['id_allegato'] ?>, '../../modules/documents/download_manager.php?doc=allegato&id=<?php echo $circ['id_allegato'] ?>')"><?php echo $circ['allegato'] ?></a><?php endif; ?></div>
+		<?php if (count($allegati) > 0): ?>
+        <div style="width: 90%; margin-left: 20px; margin-top: 40px; line-height: 18px">
+            <p class="_bold">Allegati</p>
+            <?php
+			foreach ($allegati as $item) {
+                ?>
+                <p>
+                    <a class="dwl" href="#" onclick="dwl(<?php echo $item['id'] ?>, '../../modules/documents/download_manager.php?doc=allegato&id=<?php echo $item['id'] ?>')"><?php echo $item['file'] ?></a>
+                </p>
+            <?php
+            }
+            ?>
+        </div>
+        <?php endif; ?>
+        <p class="spacer"></p>
 	</div>
 	
 </div>

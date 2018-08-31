@@ -71,6 +71,10 @@
 				event.preventDefault();
 				document.location.href = "circolare.php?idc="+circ;
 			});
+            $('#att_link').click(function(event){
+                event.preventDefault();
+                document.location.href = "allegati_circolare.php?idc="+circ;
+            });
 			$('#del_link').click(function(event){
 				event.preventDefault();
 				del_circ(circ);
@@ -174,6 +178,7 @@
 </div>
 <div id="hid" style="position: absolute; width: 150px; height: 120px; display: none; ">
 	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="mod_link" style="text-decoration: none">Modifica</a></p>
+    <p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="att_link" style="text-decoration: none">Gestisci allegati</a></p>
 	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="del_link" style="text-decoration: none">Cancella</a></p>
 	<p style="line-height: 12px; margin-bottom: 5px"><a href="#" id="ver_link" style="text-decoration: none">Lettura</a></p>
 </div>
