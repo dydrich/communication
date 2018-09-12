@@ -39,7 +39,6 @@
 				complete: function(data, status){
 					r = data.responseText;
 					var json = $.parseJSON(r);
-					alert(json.status);
 					if(json.status == "kosql"){
 						j_alert("error", "Errore SQL. \nQuery: "+json.query+"\nErrore: "+json.message);
 		            }
